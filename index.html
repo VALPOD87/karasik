@@ -323,7 +323,7 @@ const COLS=[
 ];
 const PATN=['',' в горошек',' со звёздочками',' с сердечками',' в полоску'];
 const SILVER={c:'#cfd6de',a:'#8a97a8'},GOLD={c:'#ffd23f',a:'#e0a800'},GHOST={c:'#dfe4ea',a:'#b4bcc8'};
-function initDefs(){const d=el('defs',{},null);stage.insertBefore(d,stage.firstChild);let m='';[['','#fff'],['d','#ff8fc0']].forEach(([sfx,col])=>{
+function initDefs(){const d=el('defs',{},null);stage.insertBefore(d,stage.firstChild);let m='';[['','#fff'],['d','#ff8fc0'],['g','#9aa5b1']].forEach(([sfx,col])=>{
  const h=(x,y)=>`<path d="M${x} ${y+9} C${x-16} ${y-2} ${x-10} ${y-14} ${x} ${y-5} C${x+10} ${y-14} ${x+16} ${y-2} ${x} ${y+9}Z" fill="${col}" opacity=".9"/>`;
  m+=`<pattern id="pt1${sfx}" width="52" height="52" patternUnits="userSpaceOnUse"><circle cx="13" cy="13" r="8" fill="${col}" opacity=".9"/><circle cx="39" cy="39" r="8" fill="${col}" opacity=".9"/></pattern>`;
  m+=`<pattern id="pt2${sfx}" width="60" height="60" patternUnits="userSpaceOnUse"><path d="${starD(15,15,12,5)}" fill="${col}" opacity=".9"/><path d="${starD(45,45,12,5)}" fill="${col}" opacity=".9"/></pattern>`;
@@ -939,144 +939,58 @@ function puzzlePlay(){
 }
 
 /* ================= FIND IN ROOM ================= */
-const FIND=[
-  {s:'Найди что-нибудь красное!',i:'color',c:'#ff5d73'},
-  {s:'Найди что-нибудь синее!',i:'color',c:'#4d7fe0'},
-  {s:'Найди что-нибудь жёлтое!',i:'color',c:'#ffd23f'},
-  {s:'Найди что-нибудь зелёное!',i:'color',c:'#5cc46a'},
-  {s:'Найди что-нибудь розовое!',i:'color',c:'#ff8fc0'},
-  {s:'Найди что-нибудь белое!',i:'color',c:'#ffffff'},
-  {s:'Найди что-нибудь оранжевое!',i:'color',c:'#ffab4a'},
-  {s:'Найди что-нибудь фиолетовое!',i:'color',c:'#b388eb'},
-  {s:'Найди что-нибудь голубое!',i:'color',c:'#8fd3ff'},
-  {s:'Найди что-нибудь чёрное!',i:'color',c:'#3a3a48'},
-  {s:'Найди что-нибудь коричневое!',i:'color',c:'#a8703f'},
-  {s:'Найди что-нибудь серое!',i:'color',c:'#b4bcc8'},
-  {s:'Найди что-нибудь круглое!',e:'⚽'},
-  {s:'Найди что-нибудь квадратное!',e:'🟦'},
-  {s:'Найди что-нибудь треугольное!',e:'🔺'},
-  {s:'Найди что-нибудь длинное!',e:'📏'},
-  {s:'Найди что-нибудь короткое!',e:'🖍️'},
-  {s:'Найди что-нибудь плоское!',e:'📄'},
-  {s:'Найди что-нибудь толстое!',e:'📚'},
-  {s:'Найди что-нибудь тонкое!',e:'🧵'},
-  {s:'Найди что-нибудь с дырочкой!',e:'🍩'},
-  {s:'Найди что-нибудь с уголками!',e:'📦'},
-  {s:'Найди что-нибудь похожее на шарик!',e:'🎈'},
-  {s:'Найди что-нибудь похожее на палочку!',e:'🥢'},
-  {s:'Найди что-нибудь мягкое!',e:'☁️'},
-  {s:'Найди что-нибудь твёрдое!',e:'🪨'},
-  {s:'Найди что-нибудь пушистое!',e:'🐑'},
-  {s:'Найди что-нибудь гладкое!',e:'🪞'},
-  {s:'Найди что-нибудь колючее!',e:'🦔'},
-  {s:'Найди что-нибудь шершавое!',e:'🧽'},
-  {s:'Найди что-нибудь скользкое!',e:'🧼'},
-  {s:'Найди что-нибудь липкое!',e:'🍯'},
-  {s:'Найди что-нибудь упругое, что пружинит!',e:'🏀'},
-  {s:'Найди что-нибудь что можно смять!',e:'🧻'},
-  {s:'Найди что-нибудь что гнётся!',e:'🪢'},
-  {s:'Найди что-нибудь что не гнётся!',e:'🥄'},
-  {s:'Найди что-нибудь тёплое!',e:'☀️'},
-  {s:'Найди что-нибудь холодное!',e:'🧊'},
-  {s:'Найди что-нибудь мокрое!',e:'💧'},
-  {s:'Найди что-нибудь сухое!',e:'🍂'},
-  {s:'Найди что-нибудь тяжёлое!',e:'🏋️'},
-  {s:'Найди что-нибудь лёгкое, как пёрышко!',e:'🪶'},
-  {s:'Найди что-нибудь большое!',e:'🐘'},
-  {s:'Найди что-нибудь очень маленькое!',e:'🐜'},
-  {s:'Найди что-нибудь больше твоей ладошки!',e:'🖐️'},
-  {s:'Найди что-нибудь меньше твоей ладошки!',e:'🤏'},
-  {s:'Найди что-нибудь выше тебя!',e:'🦒'},
-  {s:'Найди что-нибудь ниже твоей коленки!',e:'🐢'},
-  {s:'Найди что-нибудь широкое!',e:'🛋️'},
-  {s:'Найди что-нибудь узкое!',e:'🚪'},
-  {s:'Найди что-нибудь блестящее!',e:'✨'},
-  {s:'Найди что-нибудь прозрачное!',e:'🫙'},
-  {s:'Найди что-нибудь разноцветное!',e:'🌈'},
-  {s:'Найди что-нибудь в полоску!',e:'🦓'},
-  {s:'Найди что-нибудь в горошек!',e:'🐞'},
-  {s:'Найди что-нибудь в клеточку!',e:'🏁'},
-  {s:'Найди что-нибудь с цветочками!',e:'🌸'},
-  {s:'Найди что-нибудь с картинкой!',e:'🖼️'},
-  {s:'Найди что-нибудь с буквами!',e:'🔤'},
-  {s:'Найди что-нибудь с цифрами!',e:'🔢'},
-  {s:'Найди что-нибудь тёмное!',e:'🌑'},
-  {s:'Найди что-нибудь светлое!',e:'💡'},
-  {s:'Найди что-нибудь деревянное!',e:'🪵'},
-  {s:'Найди что-нибудь бумажное!',e:'📄'},
-  {s:'Найди что-нибудь железное!',e:'🔩'},
-  {s:'Найди что-нибудь пластмассовое!',e:'🧴'},
-  {s:'Найди что-нибудь из ткани!',e:'🧶'},
-  {s:'Найди что-нибудь резиновое!',e:'🦆'},
-  {s:'Найди что-нибудь что шуршит!',e:'🍂'},
-  {s:'Найди что-нибудь что звенит!',e:'🔔'},
-  {s:'Найди что-нибудь что гремит!',e:'🥁'},
-  {s:'Найди что-нибудь что стучит!',e:'🔨'},
-  {s:'Найди что-нибудь что пищит!',e:'🐭'},
-  {s:'Найди что-нибудь что совсем не шумит!',e:'🤫'},
-  {s:'Найди что-нибудь что катится!',e:'🛼'},
-  {s:'Найди что-нибудь что не катится!',e:'🧱'},
-  {s:'Найди что-нибудь что открывается!',e:'🚪'},
-  {s:'Найди что-нибудь что закрывается на молнию!',e:'🤐'},
-  {s:'Найди что-нибудь что можно надеть!',e:'🧦'},
-  {s:'Найди что-нибудь что можно обнять!',e:'🧸'},
-  {s:'Найди что-нибудь чем можно рисовать!',e:'🖍️'},
-  {s:'Найди что-нибудь из чего можно пить!',e:'🥤'},
-  {s:'Найди что-нибудь чем можно укрыться!',e:'🛌'},
-  {s:'Найди что-нибудь во что можно что-то положить!',e:'🧺'},
-  {s:'Найди что-нибудь что можно листать!',e:'📖'},
-  {s:'Найди что-нибудь что светится!',e:'🔦'},
-  {s:'Найди что-нибудь что крутится!',e:'🌀'},
-  {s:'Найди что-нибудь что тянется!',e:'🧦'},
-  {s:'Найди что-нибудь на чём можно сидеть!',e:'🪑'},
-  {s:'Найди что-нибудь что можно построить башней!',e:'🧱'},
-  {s:'Найди что-нибудь что плавает в воде!',e:'🛟'},
-  {s:'Найди что-нибудь что вкусно пахнет!',e:'👃'},
-  {s:'Найди что-нибудь что пахнет мылом!',e:'🧼'},
-  {s:'Найди что-нибудь вкусное!',e:'🍎'},
-  {s:'Найди что-нибудь сладкое!',e:'🍌'},
-  {s:'Найди что-нибудь красное и круглое!',e:'🍎'},
-  {s:'Найди что-нибудь жёлтое и мягкое!',e:'🐥'},
-  {s:'Найди что-нибудь синее и твёрдое!',e:'🧢'},
-  {s:'Найди что-нибудь белое и мягкое!',e:'☁️'},
-  {s:'Найди что-нибудь зелёное и маленькое!',e:'🐸'},
-  {s:'Найди что-нибудь большое и мягкое!',e:'🧸'},
-  {s:'Найди что-нибудь маленькое и твёрдое!',e:'🔘'},
-  {s:'Найди что-нибудь круглое и блестящее!',e:'🪙'},
-  {s:'Найди что-нибудь длинное и мягкое!',e:'🧣'},
-  {s:'Найди что-нибудь розовое и пушистое!',e:'🦩'},
-  {s:'Найди что-нибудь старое!',e:'🕰️'},
-  {s:'Найди что-нибудь новое!',e:'🎁'},
-  {s:'Найди что-нибудь красивое!',e:'💖'},
-  {s:'Найди что-нибудь смешное!',e:'🤪'},
-  {s:'Найди что-нибудь своё самое любимое!',e:'🥰'},
-  {s:'Найди что-нибудь два одинаковых предмета!',e:'👯'},
-  {s:'Найди что-нибудь два предмета одного цвета!',e:'🎨'},
-  {s:'Найди что-нибудь что есть у мамы!',e:'👜'},
-  {s:'Найди что-нибудь что есть у папы!',e:'🧔'},
-  {s:'Найди что-нибудь что живёт на кухне!',e:'🍳'},
-  {s:'Найди что-нибудь что живёт в ванной!',e:'🛁'},
-  {s:'Найди что-нибудь что живёт в твоей комнате!',e:'🧸'},
-  {s:'Найди что-нибудь что лежит низко, на полу!',e:'⬇️'},
-  {s:'Найди что-нибудь что стоит высоко!',e:'⬆️'}
-];
-function findIcon(t){if(t.e)return `<text y="110" text-anchor="middle" font-size="300" style="font-family:'Apple Color Emoji','Noto Color Emoji','Segoe UI Emoji',sans-serif">${t.e}</text>`;const face=(extra)=>`<circle cx="0" cy="0" r="170" fill="#ffd9c2" stroke="#e8b89a" stroke-width="8"/><ellipse cx="-60" cy="-20" rx="16" ry="22" fill="#2b2b3a"/><ellipse cx="60" cy="-20" rx="16" ry="22" fill="#2b2b3a"/><path d="M-40 70 Q0 105 40 70" fill="none" stroke="#c2185b" stroke-width="10" stroke-linecap="round"/><path d="M0 0 Q-14 40 0 46" fill="none" stroke="#c98a6a" stroke-width="8" stroke-linecap="round"/>${extra}`;
-  switch(t.i){
-  case 'color':return `<path d="M-150 -40 Q-170 -170 -20 -160 Q160 -180 160 -20 Q170 150 0 160 Q-170 170 -150 -40Z" fill="${t.c}" stroke="rgba(0,0,0,.15)" stroke-width="8"/><circle cx="-45" cy="-30" r="22" fill="#fff"/><circle cx="45" cy="-30" r="22" fill="#fff"/><circle cx="-40" cy="-26" r="11" fill="#222"/><circle cx="50" cy="-26" r="11" fill="#222"/><path d="M-40 50 Q0 85 40 50" fill="none" stroke="#222" stroke-width="9" stroke-linecap="round"/>`;
-  case 'circle':return `<circle r="150" fill="#ffd23f" stroke="#e0a800" stroke-width="10"/><circle r="70" fill="#fff3b0"/>`;
-  case 'square':return `<rect x="-140" y="-140" width="280" height="280" rx="24" fill="#4d9de0" stroke="#2f6fb0" stroke-width="10"/>`;
-  case 'teddy':return `<circle cx="-85" cy="-120" r="45" fill="#b07a4f"/><circle cx="85" cy="-120" r="45" fill="#b07a4f"/><ellipse cx="0" cy="90" rx="110" ry="90" fill="#b07a4f"/><circle cx="0" cy="-50" r="105" fill="#b07a4f"/><ellipse cx="0" cy="-20" rx="45" ry="34" fill="#e3c29b"/><ellipse cx="0" cy="-32" rx="16" ry="11" fill="#4a2f1d"/><circle cx="-40" cy="-75" r="12" fill="#2b2b3a"/><circle cx="40" cy="-75" r="12" fill="#2b2b3a"/>`;
-  case 'book':return `<path d="M0 -110 Q-90 -150 -180 -120 L-180 120 Q-90 90 0 130 Q90 90 180 120 L180 -120 Q90 -150 0 -110Z" fill="#fff" stroke="#4d9de0" stroke-width="12"/><line x1="0" y1="-110" x2="0" y2="130" stroke="#4d9de0" stroke-width="8"/><g stroke="#bcd" stroke-width="7"><line x1="-140" y1="-60" x2="-40" y2="-55"/><line x1="-140" y1="-10" x2="-40" y2="-5"/><line x1="40" y1="-55" x2="140" y2="-60"/><line x1="40" y1="-5" x2="140" y2="-10"/></g>`;
-  case 'spoon':return `<g transform="rotate(35)"><ellipse cx="0" cy="-90" rx="60" ry="85" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/><rect x="-14" y="-10" width="28" height="190" rx="14" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/></g>`;
-  case 'sock':return `<path d="M-40 -160 L50 -160 L50 40 Q50 80 90 100 Q150 130 120 170 Q90 200 20 170 L-60 130 Q-90 110 -70 60 L-40 0 Z" fill="#ff8fc0" stroke="#e0407f" stroke-width="10" stroke-linejoin="round"/><rect x="-45" y="-160" width="100" height="40" fill="#fff" stroke="#e0407f" stroke-width="8"/>`;
-  case 'ball':return `<circle r="150" fill="#ff5d73" stroke="#c9184a" stroke-width="10"/><path d="M-150 0 Q0 60 150 0" fill="none" stroke="#fff" stroke-width="22"/><path d="M0 -150 Q-60 0 0 150" fill="none" stroke="#ffd23f" stroke-width="22"/>`;
-  case 'pillow':return `<path d="M-170 -100 Q0 -140 170 -100 Q140 0 170 100 Q0 140 -170 100 Q-140 0 -170 -100Z" fill="#c8e7ff" stroke="#7bb8e8" stroke-width="10"/><circle cx="0" cy="0" r="22" fill="#7bb8e8"/>`;
-  case 'window':return `<rect x="-150" y="-160" width="300" height="320" rx="16" fill="#bfe8ff" stroke="#8a5a3c" stroke-width="18"/><line x1="0" y1="-160" x2="0" y2="160" stroke="#8a5a3c" stroke-width="14"/><line x1="-150" y1="0" x2="150" y2="0" stroke="#8a5a3c" stroke-width="14"/><circle cx="-80" cy="-90" r="30" fill="#ffe066"/>`;
-  case 'door':return `<rect x="-110" y="-180" width="220" height="360" rx="14" fill="#c58b5a" stroke="#8a5a3c" stroke-width="12"/><rect x="-75" y="-140" width="150" height="110" rx="10" fill="none" stroke="#8a5a3c" stroke-width="8"/><rect x="-75" y="10" width="150" height="130" rx="10" fill="none" stroke="#8a5a3c" stroke-width="8"/><circle cx="70" cy="0" r="14" fill="#ffd23f"/>`;
-  case 'nose':return face(`<circle cx="0" cy="30" r="36" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/>`);
-  case 'ears':return face(`<ellipse cx="-175" cy="0" rx="28" ry="48" fill="#ffd9c2" stroke="#ff5d73" stroke-width="8"/><ellipse cx="175" cy="0" rx="28" ry="48" fill="#ffd9c2" stroke="#ff5d73" stroke-width="8"/>`);
-  case 'eyes':return face(`<circle cx="-60" cy="-20" r="40" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/><circle cx="60" cy="-20" r="40" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/>`);
-  }return '';}
+const FCOL=[['красное','#ff5d73'],['синее','#4d7fe0'],['жёлтое','#ffd23f'],['зелёное','#5cc46a'],['розовое','#ff8fc0'],['белое','#ffffff'],['оранжевое','#ffab4a'],['фиолетовое','#b388eb'],['голубое','#8fd3ff'],['чёрное','#3a3a48'],['коричневое','#a8703f'],['серое','#b4bcc8']];
+const FBLOB=[['круглое','circle'],['квадратное','square'],['треугольное','tri'],['длинное','long'],['с дырочкой','hole'],['большое','big'],['очень маленькое','tiny'],['блестящее','shiny'],['прозрачное','clear'],['разноцветное','rainbow'],['в полоску','p4'],['в горошек','p1'],['в клеточку','check'],['с цветочками','flowers'],['пушистое','fluffy'],['колючее','spiky']];
+const FOBJ=[['носочек','sock'],['полотенце','towel'],['мягкую игрушку','teddy'],['книжку','book'],['ложку','spoon'],['чашку','cup'],['тарелку','plate'],['мячик','ball'],['подушку','pillow'],['одеяло','blanket'],['шапку','hat'],['ботинок','shoe'],['кубик','cube'],['машинку','car'],['карандаш','pencil'],['расчёску','comb'],['зубную щётку','brush'],['куклу','doll'],['варежку','mitten'],['футболку','tee'],['штанишки','pants'],['бутылочку','bottle']];
+const FVOICE=['мягкое','твёрдое','гладкое','шершавое','скользкое','липкое','упругое, что пружинит','что можно смять','что гнётся','что не гнётся','тёплое','холодное','мокрое','сухое','тяжёлое','лёгкое, как пёрышко','больше твоей ладошки','меньше твоей ладошки','выше тебя','ниже твоей коленки','широкое','узкое','короткое','плоское','толстое','тонкое','тёмное','светлое','с картинкой','с буквами','с цифрами','деревянное','бумажное','железное','пластмассовое','из ткани','резиновое','что шуршит','что звенит','что гремит','что стучит','что пищит','что совсем не шумит','что катится','что не катится','что открывается','что закрывается на молнию','что можно надеть','что можно обнять','чем можно рисовать','из чего можно пить','чем можно укрыться','во что можно что-то положить','что можно листать','что светится','что крутится','что тянется','на чём можно сидеть','что можно построить башней','что плавает в воде','что вкусно пахнет','что пахнет мылом','вкусное','сладкое','красное и круглое','жёлтое и мягкое','синее и твёрдое','белое и мягкое','зелёное и маленькое','большое и мягкое','маленькое и твёрдое','круглое и блестящее','длинное и мягкое','розовое и пушистое','старое','новое','красивое','смешное','своё самое любимое','два одинаковых предмета','два предмета одного цвета','что есть у мамы','что есть у папы','что живёт на кухне','что живёт в ванной','что живёт в твоей комнате','что лежит низко, на полу','что стоит высоко'];
+const FIND={color:FCOL.map(([w,c])=>({s:`Найди что-нибудь ${w}!`,i:'color',c})),blob:FBLOB.map(([w,k])=>({s:`Найди что-нибудь ${w}!`,i:'blob',k})),obj:FOBJ.map(([w,k])=>({s:`Найди и принеси ${w}!`,i:'obj',k})),voice:FVOICE.map(w=>({s:`Найди что-нибудь ${w}!`,i:'voice'}))};
+function findIcon(t){
+ const face=(x,y,s)=>`<g transform="translate(${x||0},${y||0}) scale(${s||1})"><circle cx="-45" cy="-20" r="22" fill="#fff" stroke="#2b2b3a" stroke-width="3"/><circle cx="45" cy="-20" r="22" fill="#fff" stroke="#2b2b3a" stroke-width="3"/><circle cx="-40" cy="-16" r="11" fill="#222"/><circle cx="50" cy="-16" r="11" fill="#222"/><path d="M-40 50 Q0 85 40 50" fill="none" stroke="#222" stroke-width="9" stroke-linecap="round"/></g>`;
+ const BL='M-150 -40 Q-170 -170 -20 -160 Q160 -180 160 -20 Q170 150 0 160 Q-170 170 -150 -40Z',NF='#fff',NS='#8a97a8',st=`stroke="${NS}" stroke-width="10" stroke-linejoin="round"`;
+ if(t.i==='color')return `<path d="${BL}" fill="${t.c}" stroke="rgba(0,0,0,.18)" stroke-width="8"/>${face()}`;
+ if(t.i==='voice')return `<g class="pulse"><path d="M-150 -50 L-80 -50 L20 -130 L20 130 L-80 50 L-150 50 Z" fill="#ffd23f" stroke="#e0a800" stroke-width="10" stroke-linejoin="round"/><path d="M70 -60 Q120 0 70 60" fill="none" stroke="#e0a800" stroke-width="16" stroke-linecap="round"/><path d="M115 -110 Q200 0 115 110" fill="none" stroke="#e0a800" stroke-width="16" stroke-linecap="round"/></g>`;
+ if(t.i==='blob')switch(t.k){
+  case 'circle':return `<circle r="165" fill="${NF}" ${st}/>${face()}`;
+  case 'square':return `<rect x="-155" y="-155" width="310" height="310" rx="14" fill="${NF}" ${st}/>${face()}`;
+  case 'tri':return `<path d="M0 -190 L210 170 L-210 170 Z" fill="${NF}" ${st}/>${face(0,50,.8)}`;
+  case 'long':return `<rect x="-330" y="-60" width="660" height="120" rx="60" fill="${NF}" ${st}/>${face(0,-6,.55)}`;
+  case 'hole':return `<circle r="170" fill="${NF}" ${st}/><circle r="70" fill="#eaf7e4" ${st}/>${face(0,-112,.45)}`;
+  case 'big':return `<g transform="scale(1.55)"><path d="${BL}" fill="${NF}" stroke="${NS}" stroke-width="7"/>${face()}</g>`;
+  case 'tiny':return `<g transform="scale(.3)"><path d="${BL}" fill="${NF}" stroke="${NS}" stroke-width="26"/>${face()}</g>`;
+  case 'shiny':return `<path d="${BL}" fill="#eef2f7" ${st}/><path d="M-110 -60 Q-90 -130 -20 -130" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>${face()}`+[[-210,-150,50],[215,-120,38],[200,130,46],[-205,120,32],[0,-225,30]].map(([x,y,r])=>`<path d="M${x} ${y-r} Q${x+r*.15} ${y-r*.15} ${x+r} ${y} Q${x+r*.15} ${y+r*.15} ${x} ${y+r} Q${x-r*.15} ${y+r*.15} ${x-r} ${y} Q${x-r*.15} ${y-r*.15} ${x} ${y-r}Z" fill="#ffe066" stroke="#e0a800" stroke-width="4"/>`).join('');
+  case 'clear':return `<path d="${BL}" fill="rgba(200,235,255,.25)" stroke="${NS}" stroke-width="10" stroke-dasharray="26 18"/><path d="M-110 -60 Q-90 -130 -20 -130" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"/>${face()}`;
+  case 'rainbow':return `<clipPath id="fbc"><path d="${BL}"/></clipPath><g clip-path="url(#fbc)">${['#ff5d73','#ffab4a','#ffe066','#5cc46a','#8fd3ff','#b388eb'].map((c,i)=>`<rect x="-200" y="${-180+i*60}" width="400" height="62" fill="${c}"/>`).join('')}</g><path d="${BL}" fill="none" stroke="rgba(0,0,0,.2)" stroke-width="8"/>${face()}`;
+  case 'p4':case 'p1':return `<path d="${BL}" fill="${NF}" ${st}/><path d="${BL}" fill="url(#pt${t.k[1]}g)"/>${face()}`;
+  case 'check':return `<clipPath id="fbc"><path d="${BL}"/></clipPath><path d="${BL}" fill="${NF}"/><g clip-path="url(#fbc)">${[...Array(36)].map((_,i)=>{const r=Math.floor(i/6),c=i%6;return (r+c)%2?`<rect x="${-180+c*60}" y="${-180+r*60}" width="60" height="60" fill="#9aa5b1" opacity=".85"/>`:'';}).join('')}</g><path d="${BL}" fill="none" ${st}/>${face()}`;
+  case 'flowers':return `<path d="${BL}" fill="${NF}" ${st}/>`+[[-95,-100],[70,-110],[110,40],[-110,60],[0,115],[-10,-125]].map(([x,y])=>[0,1,2,3,4].map(j=>`<circle cx="${(x+Math.cos(j*1.257)*15).toFixed(1)}" cy="${(y+Math.sin(j*1.257)*15).toFixed(1)}" r="11" fill="#ff8fc0"/>`).join('')+`<circle cx="${x}" cy="${y}" r="9" fill="#ffd23f"/>`).join('')+face();
+  case 'fluffy':return [...Array(26)].map((_,i)=>{const a=i*Math.PI*2/26;return `<circle cx="${(Math.cos(a)*150).toFixed(1)}" cy="${(Math.sin(a)*150).toFixed(1)}" r="44" fill="#fff" stroke="${NS}" stroke-width="7"/>`;}).join('')+`<circle r="158" fill="#fff"/>`+[...Array(14)].map((_,i)=>{const a=i*Math.PI*2/14+.2;return `<path d="M${(Math.cos(a)*95-14).toFixed(1)} ${(Math.sin(a)*95).toFixed(1)} q14 -16 28 0" fill="none" stroke="#c3ccd8" stroke-width="6" stroke-linecap="round"/>`;}).join('')+face();
+  case 'spiky':return `<path d="${[...Array(32)].map((_,i)=>{const a=i*Math.PI/16,r=i%2?130:215;return (i?'L':'M')+(Math.cos(a)*r).toFixed(1)+' '+(Math.sin(a)*r).toFixed(1);}).join('')}Z" fill="${NF}" ${st}/>${face(0,0,.85)}`;
+ }
+ const sc=(m,s,x,y)=>`<g transform="translate(${x||0},${y||0}) scale(${s})">${m}</g>`;
+ switch(t.k){
+  case 'sock':return sc(pairShape('sock',COLS[1],1),1.15);
+  case 'mitten':return sc(pairShape('mitten',COLS[0],0),1.15);
+  case 'tee':return sc(flat(D('tee',5,0)),1.9,0,110);
+  case 'pants':return sc(flat(D('pants',6,0)),1.5,0,-170);
+  case 'hat':return sc(flat(D('winterhat',0,0)),2,0,610);
+  case 'doll':return sc(dollMarkup(CHARS[0],CHARS[0].def),.62,0,45);
+  case 'car':{const v=vehSVG('car');return sc(v.m.replace(/<g class="wh" data-x="(\d+)">/g,'<g transform="translate($1,122)">'),1.5,-240,-90);}
+  case 'teddy':return `<circle cx="-85" cy="-120" r="45" fill="#b07a4f"/><circle cx="85" cy="-120" r="45" fill="#b07a4f"/><ellipse cx="0" cy="90" rx="110" ry="90" fill="#b07a4f"/><circle cx="0" cy="-50" r="105" fill="#b07a4f"/><ellipse cx="0" cy="-20" rx="45" ry="34" fill="#e3c29b"/><ellipse cx="0" cy="-32" rx="16" ry="11" fill="#4a2f1d"/><circle cx="-40" cy="-75" r="12" fill="#2b2b3a"/><circle cx="40" cy="-75" r="12" fill="#2b2b3a"/><ellipse cx="0" cy="110" rx="55" ry="50" fill="#e3c29b"/>`;
+  case 'book':return `<path d="M0 -110 Q-90 -150 -180 -120 L-180 120 Q-90 90 0 130 Q90 90 180 120 L180 -120 Q90 -150 0 -110Z" fill="#fff" stroke="#4d9de0" stroke-width="12"/><line x1="0" y1="-110" x2="0" y2="130" stroke="#4d9de0" stroke-width="8"/><g stroke="#bcd" stroke-width="7"><line x1="-140" y1="-60" x2="-40" y2="-55"/><line x1="-140" y1="-10" x2="-40" y2="-5"/><line x1="-140" y1="40" x2="-40" y2="45"/><line x1="40" y1="-55" x2="140" y2="-60"/><line x1="40" y1="-5" x2="140" y2="-10"/><line x1="40" y1="45" x2="140" y2="40"/></g>`;
+  case 'spoon':return `<g transform="rotate(35)"><ellipse cx="0" cy="-110" rx="62" ry="88" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/><rect x="-14" y="-30" width="28" height="230" rx="14" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/></g>`;
+  case 'ball':return `<circle r="160" fill="#ff5d73" stroke="#c9184a" stroke-width="10"/><path d="M-158 0 Q0 64 158 0" fill="none" stroke="#fff" stroke-width="24"/><path d="M0 -158 Q-64 0 0 158" fill="none" stroke="#ffd23f" stroke-width="24"/>`;
+  case 'pillow':return `<path d="M-190 -120 Q0 -160 190 -120 Q160 0 190 120 Q0 160 -190 120 Q-160 0 -190 -120Z" fill="#c8e7ff" stroke="#7bb8e8" stroke-width="10"/><circle r="20" fill="#7bb8e8"/><path d="M-190 -120 l-22 -18 M190 -120 l22 -18 M-190 120 l-22 18 M190 120 l22 18" stroke="#7bb8e8" stroke-width="10" stroke-linecap="round"/>`;
+  case 'towel':return `<rect x="-150" y="-190" width="300" height="380" rx="18" fill="#8fd3ff" stroke="#4d9de0" stroke-width="10"/><rect x="-150" y="-140" width="300" height="34" fill="#fff"/><rect x="-150" y="106" width="300" height="34" fill="#fff"/>${[...Array(10)].map((_,i)=>`<line x1="${-135+i*30}" y1="190" x2="${-135+i*30}" y2="222" stroke="#4d9de0" stroke-width="8" stroke-linecap="round"/>`).join('')}`;
+  case 'cup':return `<path d="M100 -70 Q210 -70 210 20 Q210 110 90 100" fill="none" stroke="#e5679f" stroke-width="30"/><path d="M-140 -120 L140 -120 L115 130 Q112 150 90 150 L-90 150 Q-112 150 -115 130 Z" fill="#ff9ecb" stroke="#e5679f" stroke-width="10" stroke-linejoin="round"/><ellipse cx="0" cy="-120" rx="140" ry="26" fill="#fff" stroke="#e5679f" stroke-width="10"/><path d="${starD(0,30,46,20)}" fill="#fff"/>`;
+  case 'plate':return `<ellipse cx="0" cy="20" rx="220" ry="130" fill="#fff" stroke="#9aa5b1" stroke-width="10"/><ellipse cx="0" cy="20" rx="140" ry="76" fill="#f3f6fa" stroke="#c3ccd8" stroke-width="8"/>`;
+  case 'blanket':return `<path d="M-200 -130 L200 -130 L200 150 L-200 150 Z" fill="#b388eb" stroke="#7b4fc9" stroke-width="10" stroke-linejoin="round"/><path d="M-200 -130 L200 -130 L200 -40 Q0 -10 -200 -40 Z" fill="#d6c2f7" stroke="#7b4fc9" stroke-width="10" stroke-linejoin="round"/>${[[-120,70],[0,90],[120,70],[-60,20],[60,20]].map(([x,y])=>`<path d="${starD(x,y,20,9)}" fill="#fff"/>`).join('')}`;
+  case 'shoe':return `<path d="M-200 100 L-200 -90 Q-200 -120 -170 -120 L-70 -120 L-50 -20 Q60 -10 150 40 Q210 60 210 100 Z" fill="#ff5d73" stroke="#c9184a" stroke-width="10" stroke-linejoin="round"/><rect x="-210" y="96" width="430" height="40" rx="18" fill="#fff" stroke="#c9184a" stroke-width="8"/><path d="M-60 -70 L10 -40 M-56 -36 L30 -14" stroke="#fff" stroke-width="10" stroke-linecap="round"/>`;
+  case 'cube':return `<path d="M-150 -70 L0 -150 L150 -70 L150 100 L0 180 L-150 100 Z" fill="#ffd23f" stroke="#e0a800" stroke-width="10" stroke-linejoin="round"/><path d="M-150 -70 L0 10 L150 -70 M0 10 L0 180" fill="none" stroke="#e0a800" stroke-width="10" stroke-linejoin="round"/><path d="M-150 -70 L0 10 L0 180 L-150 100Z" fill="#ffab4a" opacity=".55"/><text x="-76" y="100" text-anchor="middle" font-size="110" fill="#fff" transform="skewY(28) translate(0,36)">А</text>`;
+  case 'pencil':return `<g transform="rotate(-35)"><rect x="-230" y="-30" width="360" height="60" fill="#ffd23f" stroke="#e0a800" stroke-width="8"/><path d="M130 -30 L220 0 L130 30 Z" fill="#f2d2a9" stroke="#c9a06a" stroke-width="8" stroke-linejoin="round"/><path d="M186 -12 L220 0 L186 12Z" fill="#3a3a48"/><rect x="-270" y="-30" width="44" height="60" rx="10" fill="#ff8fc0" stroke="#e5679f" stroke-width="8"/></g>`;
+  case 'comb':return `<rect x="-210" y="-110" width="420" height="80" rx="24" fill="#3bceac" stroke="#24a084" stroke-width="10"/>${[...Array(13)].map((_,i)=>`<rect x="${-196+i*31}" y="-34" width="18" height="150" rx="9" fill="#3bceac" stroke="#24a084" stroke-width="6"/>`).join('')}`;
+  case 'brush':return `<g transform="rotate(-30)"><rect x="-240" y="-20" width="400" height="44" rx="22" fill="#4d9de0" stroke="#2f6fb0" stroke-width="8"/><rect x="130" y="-70" width="110" height="56" rx="8" fill="#fff" stroke="#9aa5b1" stroke-width="7"/>${[...Array(5)].map((_,i)=>`<line x1="${146+i*20}" y1="-66" x2="${146+i*20}" y2="-18" stroke="#c3ccd8" stroke-width="5"/>`).join('')}<rect x="124" y="-20" width="122" height="44" rx="14" fill="#4d9de0" stroke="#2f6fb0" stroke-width="8"/></g>`;
+  case 'bottle':return `<rect x="-36" y="-210" width="72" height="50" rx="10" fill="#4d9de0" stroke="#2f6fb0" stroke-width="8"/><path d="M-40 -160 L40 -160 Q90 -110 90 -50 L90 170 Q90 200 60 200 L-60 200 Q-90 200 -90 170 L-90 -50 Q-90 -110 -40 -160Z" fill="rgba(190,230,255,.6)" stroke="#4d9de0" stroke-width="10"/><path d="M-84 0 L84 0 L84 170 Q84 194 60 194 L-60 194 Q-84 194 -84 170Z" fill="#8fd3ff"/><rect x="-90" y="-40" width="180" height="70" fill="#fff" stroke="#4d9de0" stroke-width="6"/>`;
+ }return '';}
 function findScene(){
   document.body.style.background='#eaf7e4';
   const tk=token;let cur=null,last=-1,busy=false;
@@ -1085,7 +999,7 @@ function findScene(){
   let inp=document.getElementById('camInp');if(!inp){inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.setAttribute('capture','environment');inp.id='camInp';inp.style.display='none';document.body.appendChild(inp);}
   inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=document.createElement('canvas');const s=360/Math.max(img.width,img.height);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const url=c.toDataURL('image/jpeg',.7);S.finds=[url,...(S.finds||[])].slice(0,6);save();renderFinds();found(true);URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);inp.value='';};
   function renderFinds(){findsG.innerHTML='';(S.finds||[]).forEach((u,i)=>{const x=120+i*230,y=860;const g=el('g',{transform:`rotate(${(i%2?3:-3)} ${x} ${y})`},findsG);g.innerHTML=`<rect x="${x-95}" y="${y-95}" width="190" height="190" rx="12" fill="#fff" stroke="#ddd" stroke-width="3"/><image href="${u}" x="${x-82}" y="${y-82}" width="164" height="164" preserveAspectRatio="xMidYMid slice"/>`;});}
-  let bag=[];function next(){if(tk!==token)return;busy=false;if(!bag.length)bag=shuffle([...FIND.keys()]);const k=bag.pop();last=k;cur=FIND[k];iconG.innerHTML='';const g=el('g',{transform:'translate(800,420)'},iconG);const inner=el('g',{},g);inner.innerHTML=findIcon(cur);inner.setAttribute('transform','scale(0)');tween(450,t=>inner.setAttribute('transform',`scale(${t})`),null,ease.back);say(cur.s,300);}
+  let bag=[],vb=[];function next(){if(tk!==token)return;busy=false;if(!bag.length){if(vb.length<14)vb=shuffle(FIND.voice.slice());bag=shuffle([...FIND.color,...FIND.blob,...FIND.obj,...vb.splice(0,14)]);}cur=bag.pop();iconG.innerHTML='';const g=el('g',{transform:'translate(800,420)'},iconG);const inner=el('g',{},g);inner.innerHTML=findIcon(cur);inner.setAttribute('transform','scale(0)');tween(450,t=>inner.setAttribute('transform',`scale(${t})`),null,ease.back);if(cur.i==='voice')tap(g,()=>say(cur.s));say(cur.s,300);}
   function found(withPhoto){if(busy)return;busy=true;SFX.tada();confetti(800,420);addStar(800,420);const praise=['Молодец! Нашла!','Ура! Правильно!','Умница!','Вот это да! Нашла!'];say(praise[rnd(praise.length)]);setTimeout(next,2600);}
   const B=(x,y,r,col,icon,fn,pulse)=>{const g=el('g',{},btnG);const inner=el('g',{class:pulse?'pulse':''},g);inner.innerHTML=`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke="#fff" stroke-width="9"/>${icon}`;tap(g,fn);};
   B(1340,420,130,'#3bceac',`<path d="M1280 425 L1325 470 L1405 375" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>`,()=>found(false),true);
