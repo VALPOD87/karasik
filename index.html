@@ -45,7 +45,7 @@ function starD(cx,cy,R,r){let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Ma
 
 /* ---------- storage ---------- */
 const store={get(k,d){try{const v=localStorage.getItem('karasik_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('karasik_'+k,JSON.stringify(v));}catch(e){}}};
-const S={stars:store.get('stars',0),buildIdx:store.get('buildIdx',0),sound:store.get('sound',true),voice:store.get('voice',true),looks:store.get('looks',{}),album:store.get('album',[]),charIdx:store.get('charIdx',0),abcLvl:store.get('abcLvl',0),numLvl:store.get('numLvl',0),abcMode:store.get('abcMode','num'),orderLvl:store.get('orderLvl',0),orderWins:store.get('orderWins',0)};
+const S={stars:store.get('stars',0),buildIdx:store.get('buildIdx',0),sound:store.get('sound',true),voice:store.get('voice',true),looks:store.get('looks',{}),album:store.get('album',[]),charIdx:store.get('charIdx',0),abcLvl:store.get('abcLvl',0),numLvl:store.get('numLvl',0),abcMode:store.get('abcMode','num'),pzLvl:store.get('pzLvl',0),pzIdx:store.get('pzIdx',0),pzDone:store.get('pzDone',0),finds:store.get('finds',[]),numStreak:store.get('numStreak',0),abcStreak:store.get('abcStreak',0),orderLvl:store.get('orderLvl',0),orderWins:store.get('orderWins',0)};
 function save(){for(const k in S)store.set(k,S[k]);}
 
 /* ---------- sound ---------- */
@@ -121,14 +121,19 @@ function home(){
   <g fill="#fff" opacity=".9"><ellipse cx="420" cy="120" rx="90" ry="40"/><ellipse cx="480" cy="100" rx="70" ry="45"/><ellipse cx="1150" cy="190" rx="100" ry="40"/><ellipse cx="1210" cy="165" rx="70" ry="45"/></g>
   <path d="M-2000 790 Q-100 760 0 790 T 200 790 T 400 790 T 600 790 T 800 790 T 1000 790 T 1200 790 T 1400 790 T 1600 790 T 1800 790 L3600 790 L3600 3000 L-2000 3000 Z" fill="#7cc8f2"/>
   <path d="M-2000 830 L3600 830 L3600 3000 L-2000 3000 Z" fill="#5fb6e8"/>
-  <text x="800" y="185" text-anchor="middle" font-size="140" fill="#ff8f1f" stroke="#fff" stroke-width="18" paint-order="stroke" stroke-linejoin="round">Карасик</text>`;
+  <text x="800" y="128" text-anchor="middle" font-size="108" fill="#ff8f1f" stroke="#fff" stroke-width="18" paint-order="stroke" stroke-linejoin="round">Карасик</text>`;
   const tiles=[
-    {x:330,label:'Строим',col:'#3bceac',fn:build,voice:'Строим!',icon:`<rect x="-95" y="-10" width="150" height="120" rx="10" fill="#ffc94d" stroke="#e0a800" stroke-width="6"/><path d="M-115 -10 L-20 -100 L75 -10 Z" fill="#ff5d73" stroke="#c9184a" stroke-width="6" stroke-linejoin="round"/><rect x="-40" y="40" width="40" height="70" rx="6" fill="#8a5a3c"/><circle cx="100" cy="85" r="30" fill="#4d9de0" stroke="#2f6fb0" stroke-width="6"/><rect x="70" y="-20" width="50" height="50" rx="8" fill="#7ed957" stroke="#3a9e2f" stroke-width="6" transform="rotate(15 95 5)"/>`},
-    {x:800,label:'Наряжаем',col:'#ff8fc0',fn:dressScene,voice:'Наряжаем!',icon:`<g transform="translate(0,25) scale(.5)">${dressSVG('#ff9ecb','#e5679f','dots')}</g><g transform="translate(0,138) scale(.7)">${HEADS.crown}</g>`},
-    {x:1270,label:'Буквы и цифры',col:'#b388eb',fn:abcScene,voice:'Буквы и цифры!',icon:`<circle cx="-60" cy="-30" r="62" fill="#ffd23f" opacity=".95"/><text x="-60" y="2" text-anchor="middle" font-size="96" fill="#fff" stroke="#e0a800" stroke-width="6" paint-order="stroke">А</text><circle cx="60" cy="50" r="62" fill="#4d9de0"/><text x="60" y="82" text-anchor="middle" font-size="96" fill="#fff" stroke="#2f6fb0" stroke-width="6" paint-order="stroke">3</text>`}
+    {label:'Строим',col:'#3bceac',fn:build,voice:'Строим!',icon:`<rect x="-95" y="-10" width="150" height="120" rx="10" fill="#ffc94d" stroke="#e0a800" stroke-width="6"/><path d="M-115 -10 L-20 -100 L75 -10 Z" fill="#ff5d73" stroke="#c9184a" stroke-width="6" stroke-linejoin="round"/><rect x="-40" y="40" width="40" height="70" rx="6" fill="#8a5a3c"/><circle cx="100" cy="85" r="30" fill="#4d9de0" stroke="#2f6fb0" stroke-width="6"/>`},
+    {label:'Наряжаем',col:'#ff8fc0',fn:dressScene,voice:'Наряжаем!',icon:`<g transform="translate(0,25) scale(.5)">${dressSVG('#ff9ecb','#e5679f','dots')}</g><g transform="translate(0,138) scale(.7)">${HEADS.crown}</g>`},
+    {label:'Буквы и цифры',col:'#b388eb',fn:abcScene,voice:'Буквы и цифры!',icon:`<circle cx="-60" cy="-30" r="62" fill="#ffd23f"/><text x="-60" y="2" text-anchor="middle" font-size="96" fill="#fff" stroke="#e0a800" stroke-width="6" paint-order="stroke">А</text><rect x="0" y="-10" width="120" height="120" rx="18" fill="#4d9de0"/><text x="60" y="82" text-anchor="middle" font-size="96" fill="#fff" stroke="#2f6fb0" stroke-width="6" paint-order="stroke">3</text>`},
+    {label:'Пазлы',col:'#ff9f1c',fn:puzzleScene,voice:'Пазлы!',icon:`<g stroke="#fff" stroke-width="6"><rect x="-110" y="-100" width="110" height="110" fill="#ff9f1c"/><rect x="0" y="-100" width="110" height="110" fill="#ffd23f"/><rect x="-110" y="10" width="110" height="110" fill="#4d9de0"/><rect x="0" y="10" width="110" height="110" fill="#5cc46a"/></g><circle cx="0" cy="-45" r="24" fill="#ffd23f"/><circle cx="-55" cy="10" r="24" fill="#4d9de0"/><circle cx="55" cy="10" r="24" fill="#5cc46a"/><circle cx="0" cy="65" r="24" fill="#5cc46a"/>`},
+    {label:'Найди',col:'#5cc46a',fn:findScene,voice:'Найди в комнате!',icon:`<circle cx="-20" cy="-20" r="80" fill="#e6fff8" stroke="#2e9e5b" stroke-width="18"/><rect x="40" y="40" width="34" height="100" rx="16" fill="#2e9e5b" transform="rotate(-45 57 90)"/>`},
+    {label:'Повтори',col:'#e0407f',fn:repeatScene,voice:'Повтори за мной!',icon:`<circle cx="-65" cy="-75" r="32" fill="#b07a4f"/><circle cx="65" cy="-75" r="32" fill="#b07a4f"/><circle cx="0" cy="0" r="95" fill="#b07a4f"/><ellipse cx="0" cy="30" rx="44" ry="34" fill="#e3c29b"/><ellipse cx="0" cy="16" rx="16" ry="11" fill="#4a2f1d"/><circle cx="-35" cy="-20" r="11" fill="#2b2b3a"/><circle cx="35" cy="-20" r="11" fill="#2b2b3a"/>`},
+    {label:'Дорога',col:'#4d9de0',fn:roadScene,voice:'Дорога!',icon:`<rect x="-30" y="-130" width="60" height="150" rx="14" fill="#2b2b3a"/><circle cx="0" cy="-100" r="18" fill="#ff3b3b"/><circle cx="0" cy="-55" r="18" fill="#5a4f2a"/><circle cx="0" cy="-10" r="18" fill="#3bd16f"/><g transform="translate(-110,40) scale(.7)"><path d="M20 120 L20 70 Q20 50 40 50 L80 50 L120 0 L210 0 L255 50 L285 55 Q300 60 300 80 L300 120 Z" fill="#ff5d73"/><circle cx="85" cy="122" r="36" fill="#2b2b3a"/><circle cx="235" cy="122" r="36" fill="#2b2b3a"/></g>`}
   ];
+  tiles.forEach((t,i)=>{t.x=i<4?245+i*370:430+(i-4)*370;t.y=i<4?335:655;});
   tiles.forEach(t=>{
-    const g=el('g',{transform:`translate(${t.x},480)`},sceneG);
+    const g=el('g',{transform:`translate(${t.x},${t.y}) scale(.72)`},sceneG);
     const inner=el('g',{},g);
     inner.innerHTML=`<rect x="-200" y="-215" width="400" height="430" rx="60" fill="#fff" stroke="${t.col}" stroke-width="12"/><g transform="translate(0,-25)">${t.icon}</g><text y="170" text-anchor="middle" font-size="44" fill="${t.col}">${t.label}</text>`;
     tap(g,()=>{SFX.pop();say(t.voice);inner.setAttribute('transform','scale(.94)');setTimeout(()=>go(t.fn),180);});
@@ -156,7 +161,7 @@ function parentPanel(){
       [`Звуки: ${S.sound?'вкл':'выкл'}`,()=>{S.sound=!S.sound;save();draw();}],
       [`Голос: ${S.voice?'вкл':'выкл'}`,()=>{S.voice=!S.voice;save();draw();}],
       ['На весь экран',()=>{try{const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen).call(d);}catch(e){}}],
-      ['Сбросить звёзды и уровни',()=>{Object.assign(S,{stars:0,buildIdx:0,abcLvl:0,numLvl:0,orderLvl:0,orderWins:0,looks:{},album:[]});save();go(home);}],
+      ['Сбросить звёзды и уровни',()=>{Object.assign(S,{stars:0,buildIdx:0,abcLvl:0,numLvl:0,pzLvl:0,pzIdx:0,pzDone:0,finds:[],orderLvl:0,orderWins:0,looks:{},album:[]});save();go(home);}],
       ['Закрыть',()=>ov.remove()]
     ];
     rows.forEach(([lab,fn],i)=>{const g=el('g',{},ov);g.innerHTML=`<rect x="520" y="${290+i*110}" width="560" height="88" rx="44" fill="${i===4?'#4d9de0':'#eef2f7'}"/><text x="800" y="${348+i*110}" text-anchor="middle" font-size="38" fill="${i===4?'#fff':'#4a5568'}">${lab}</text>`;tap(g,fn);});
@@ -331,34 +336,84 @@ function shoeSVG(c,a,type){let m='';[-32,32].forEach(fx=>{
 });return m;}
 function wingsSVG(c,a,dots){let m=`<g opacity=".92"><ellipse cx="-128" cy="-170" rx="118" ry="64" transform="rotate(-35 -128 -170)" fill="${c}" stroke="${a}" stroke-width="6"/><ellipse cx="128" cy="-170" rx="118" ry="64" transform="rotate(35 128 -170)" fill="${c}" stroke="${a}" stroke-width="6"/><ellipse cx="-100" cy="-58" rx="82" ry="46" transform="rotate(25 -100 -58)" fill="${c}" stroke="${a}" stroke-width="6"/><ellipse cx="100" cy="-58" rx="82" ry="46" transform="rotate(-25 100 -58)" fill="${c}" stroke="${a}" stroke-width="6"/>`;if(dots)m+=[[-170,-205],[-120,-160],[170,-205],[120,-160],[-130,-50],[130,-50]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="12" fill="#fff"/>`).join('');return m+'</g>';}
 function capeSVG(c,a,stars){let m=`<path d="M-70 -150 L70 -150 L168 232 Q0 266 -168 232 Z" fill="${c}" stroke="${a}" stroke-width="6" stroke-linejoin="round"/>`;if(stars)m+=[[-130,180],[130,180],[-105,90],[105,90],[-140,235],[140,235]].map(([x,y])=>`<path d="${starD(x,y,15,7)}" fill="#ffd23f"/>`).join('');return m;}
+function crownSVG(c,a){return `<path d="M-78 -288 L-84 -352 L-42 -318 L0 -374 L42 -318 L84 -352 L78 -288 Q0 -276 -78 -288 Z" fill="${c}" stroke="${a}" stroke-width="6" stroke-linejoin="round"/><circle cx="0" cy="-310" r="13" fill="#fff"/><circle cx="-45" cy="-302" r="9" fill="#fff"/><circle cx="45" cy="-302" r="9" fill="#fff"/>`;}
+function bowSVG(c,a){return `<g transform="translate(62,-308) rotate(-15)"><path d="M0 0 L-58 -38 L-58 38 Z" fill="${c}" stroke="${a}" stroke-width="5" stroke-linejoin="round"/><path d="M0 0 L58 -38 L58 38 Z" fill="${c}" stroke="${a}" stroke-width="5" stroke-linejoin="round"/><circle r="17" fill="${a}"/></g>`;}
+function bootSVG(c,a){return shoeSVG(c,a,'boot');}
+function legsSVG(c,a,kind){let m='';[-33,33].forEach(fx=>{const top=kind==='tights'?2:kind==='knee'?110:175;m+=`<rect x="${fx-22}" y="${top}" width="44" height="${240-top}" rx="18" fill="${c}" stroke="${a}" stroke-width="3"/><ellipse cx="${fx}" cy="244" rx="31" ry="17" fill="${c}" stroke="${a}" stroke-width="3"/>`;
+  if(kind==='dots')for(let y=20;y<230;y+=38)m+=`<circle cx="${fx-6+((y/38)%2)*12}" cy="${y}" r="6" fill="#fff"/>`;
+  if(kind==='knee')for(let y=120;y<230;y+=30)m+=`<rect x="${fx-22}" y="${y}" width="44" height="13" fill="#fff"/>`;
+  if(kind==='socks')m+=`<path d="M${fx-22} 180 q11 -10 22 0 q11 -10 22 0" fill="none" stroke="${a}" stroke-width="4"/>`;
+ });
+ if(kind==='dots')m=m.replace(/rect x="(-?\d+)" y="2"/g,'rect x="$1" y="2"');
+ return m;}
+function beadsSVG(type){let m='';const pts=[];for(let i=0;i<=10;i++){const t=i/10,a=Math.PI*(0.12+0.76*t);pts.push([Math.cos(a)*-62, -150+Math.sin(a)*48]);}
+ if(type==='pearl')m=pts.map(([x,y])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="#fffaf0" stroke="#d9cfc0" stroke-width="2"/>`).join('');
+ else if(type==='pink')m=pts.map(([x,y],i)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="${i%2?'#ff8fc0':'#ffd1e6'}" stroke="#e0407f" stroke-width="2"/>`).join('');
+ else if(type==='heart')m=`<path d="M-58 -144 Q0 -88 58 -144" fill="none" stroke="#e0a800" stroke-width="4"/><path d="M0 -84 C-26 -102 -20 -126 0 -114 C20 -126 26 -102 0 -84Z" fill="#ff5d73" stroke="#c9184a" stroke-width="4"/>`;
+ else if(type==='star')m=`<path d="M-58 -144 Q0 -88 58 -144" fill="none" stroke="#e0a800" stroke-width="4"/><path d="${starD(0,-98,22,10)}" fill="#ffd23f" stroke="#e0a800" stroke-width="4"/>`;
+ else if(type==='scarf')m=`<path d="M-62 -150 Q0 -110 62 -150 L62 -128 Q0 -88 -62 -128Z" fill="#4d9de0" stroke="#2f6fb0" stroke-width="4"/><rect x="28" y="-128" width="30" height="80" rx="8" fill="#4d9de0" stroke="#2f6fb0" stroke-width="4"/>`;
+ return m;}
+function glassesSVG(type){const L=-34,R=34,Y=-236;
+ if(type==='heart'){const h=x=>`<path d="M${x} ${Y+22} C${x-34} ${Y} ${x-24} ${Y-28} ${x} ${Y-12} C${x+24} ${Y-28} ${x+34} ${Y} ${x} ${Y+22}Z" fill="rgba(255,93,115,.35)" stroke="#e0405e" stroke-width="6"/>`;return h(L)+h(R)+`<path d="M-12 ${Y-8} Q0 ${Y-16} 12 ${Y-8}" fill="none" stroke="#e0405e" stroke-width="5"/>`;}
+ if(type==='star')return `<path d="${starD(L,Y,32,15)}" fill="rgba(255,210,63,.35)" stroke="#e0a800" stroke-width="6" stroke-linejoin="round"/><path d="${starD(R,Y,32,15)}" fill="rgba(255,210,63,.35)" stroke="#e0a800" stroke-width="6" stroke-linejoin="round"/><line x1="-8" y1="${Y-4}" x2="8" y2="${Y-4}" stroke="#e0a800" stroke-width="5"/>`;
+ if(type==='square')return `<rect x="${L-26}" y="${Y-22}" width="52" height="44" rx="10" fill="rgba(77,157,224,.25)" stroke="#2f6fb0" stroke-width="6"/><rect x="${R-26}" y="${Y-22}" width="52" height="44" rx="10" fill="rgba(77,157,224,.25)" stroke="#2f6fb0" stroke-width="6"/><line x1="-8" y1="${Y-6}" x2="8" y2="${Y-6}" stroke="#2f6fb0" stroke-width="5"/>`;
+ if(type==='sun')return `<circle cx="${L}" cy="${Y}" r="27" fill="#2b2b3a" stroke="#111" stroke-width="5"/><circle cx="${R}" cy="${Y}" r="27" fill="#2b2b3a" stroke="#111" stroke-width="5"/><line x1="-8" y1="${Y-6}" x2="8" y2="${Y-6}" stroke="#111" stroke-width="5"/><ellipse cx="${L-9}" cy="${Y-9}" rx="7" ry="4" fill="#fff" opacity=".6"/><ellipse cx="${R-9}" cy="${Y-9}" rx="7" ry="4" fill="#fff" opacity=".6"/>`;
+ return `<circle cx="${L}" cy="${Y}" r="27" fill="rgba(255,143,192,.25)" stroke="#ff5d9e" stroke-width="6"/><circle cx="${R}" cy="${Y}" r="27" fill="rgba(255,143,192,.25)" stroke="#ff5d9e" stroke-width="6"/><line x1="-8" y1="${Y-6}" x2="8" y2="${Y-6}" stroke="#ff5d9e" stroke-width="5"/>`;}
+function balloonSVG(c,a){return `<path d="M100 25 Q135 -80 175 -165" fill="none" stroke="#888" stroke-width="4"/><ellipse cx="180" cy="-230" rx="55" ry="68" fill="${c}" stroke="${a}" stroke-width="5"/><path d="M172 -160 L188 -160 L180 -170Z" fill="${a}"/><ellipse cx="162" cy="-256" rx="12" ry="20" fill="#fff" opacity=".5"/>`;}
+function bagSVG(c,a){return `<path d="M78 40 Q100 -12 122 40" fill="none" stroke="${a}" stroke-width="8"/><rect x="66" y="38" width="72" height="62" rx="14" fill="${c}" stroke="${a}" stroke-width="6"/><circle cx="102" cy="64" r="9" fill="#fff"/>`;}
+
 const ITEMS=[
-  {id:'d1',slot:'dress',nom:'розовое платье',acc:'розовое платье',svg:dressSVG('#ff9ecb','#e5679f','dots')},
-  {id:'d2',slot:'dress',nom:'голубое платье',acc:'голубое платье',svg:dressSVG('#8fd3ff','#4d9de0','stars')},
-  {id:'d3',slot:'dress',nom:'жёлтое платье',acc:'жёлтое платье',svg:dressSVG('#ffe066','#f0b400','hearts')},
+  {id:'d1',slot:'dress',nom:'розовое платье в горошек',acc:'розовое платье в горошек',svg:dressSVG('#ff9ecb','#e5679f','dots')},
+  {id:'d8',slot:'dress',nom:'розовое платье с сердечками',acc:'розовое платье с сердечками',svg:dressSVG('#ff9ecb','#e5679f','hearts')},
+  {id:'d2',slot:'dress',nom:'голубое платье со звёздочками',acc:'голубое платье со звёздочками',svg:dressSVG('#8fd3ff','#4d9de0','stars')},
+  {id:'d7',slot:'dress',nom:'голубое платье в горошек',acc:'голубое платье в горошек',svg:dressSVG('#8fd3ff','#4d9de0','dots')},
+  {id:'d3',slot:'dress',nom:'жёлтое платье с сердечками',acc:'жёлтое платье с сердечками',svg:dressSVG('#ffe066','#f0b400','hearts')},
   {id:'d4',slot:'dress',nom:'красное платье',acc:'красное платье',svg:dressSVG('#ff5d73','#c9184a','',true)},
-  {id:'d5',slot:'dress',nom:'зелёное платье',acc:'зелёное платье',svg:dressSVG('#7ed957','#3a9e2f','stars')},
-  {id:'d6',slot:'dress',nom:'фиолетовое платье',acc:'фиолетовое платье',svg:dressSVG('#b388eb','#7b4fc9','dots',true)},
+  {id:'d5',slot:'dress',nom:'зелёное платье со звёздочками',acc:'зелёное платье со звёздочками',svg:dressSVG('#7ed957','#3a9e2f','stars')},
+  {id:'d6',slot:'dress',nom:'фиолетовое платье в горошек',acc:'фиолетовое платье в горошек',svg:dressSVG('#b388eb','#7b4fc9','dots',true)},
   {id:'h1',slot:'head',nom:'жёлтая корона',acc:'жёлтую корону',svg:HEADS.crown},
+  {id:'h6',slot:'head',nom:'розовая корона',acc:'розовую корону',svg:crownSVG('#ff9ecb','#e0407f')},
   {id:'h2',slot:'head',nom:'розовая диадема',acc:'розовую диадему',svg:HEADS.tiara},
   {id:'h3',slot:'head',nom:'красный бантик',acc:'красный бантик',svg:HEADS.bow},
+  {id:'h7',slot:'head',nom:'синий бантик',acc:'синий бантик',svg:bowSVG('#4d9de0','#2f6fb0')},
   {id:'h4',slot:'head',nom:'синяя шляпка',acc:'синюю шляпку',svg:HEADS.hat},
   {id:'h5',slot:'head',nom:'веночек из цветов',acc:'веночек из цветов',svg:HEADS.wreath},
   {id:'s1',slot:'shoes',nom:'красные туфельки',acc:'красные туфельки',svg:shoeSVG('#ff5d73','#c9184a','flat')},
   {id:'s2',slot:'shoes',nom:'синие туфельки',acc:'синие туфельки',svg:shoeSVG('#4d9de0','#2f6fb0','flat')},
   {id:'s3',slot:'shoes',nom:'жёлтые сапожки',acc:'жёлтые сапожки',svg:shoeSVG('#ffd23f','#e0a800','boot')},
+  {id:'s5',slot:'shoes',nom:'красные сапожки',acc:'красные сапожки',svg:bootSVG('#ff5d73','#c9184a')},
   {id:'s4',slot:'shoes',nom:'розовые кеды',acc:'розовые кеды',svg:shoeSVG('#ff8fc0','#e0407f','sneaker')},
+  {id:'s6',slot:'shoes',nom:'синие кеды',acc:'синие кеды',svg:shoeSVG('#4d9de0','#2f6fb0','sneaker')},
+  {id:'l1',slot:'legs',nom:'белые носочки',acc:'белые носочки',svg:legsSVG('#ffffff','#cfd6de','socks')},
+  {id:'l2',slot:'legs',nom:'жёлтые носочки',acc:'жёлтые носочки',svg:legsSVG('#ffe066','#e0a800','socks')},
+  {id:'l3',slot:'legs',nom:'розовые колготки',acc:'розовые колготки',svg:legsSVG('#ffb3d9','#ff6fae','tights')},
+  {id:'l4',slot:'legs',nom:'голубые колготки в горошек',acc:'голубые колготки в горошек',svg:legsSVG('#8fd3ff','#4d9de0','dots')},
+  {id:'l5',slot:'legs',nom:'полосатые гольфы',acc:'полосатые гольфы',svg:legsSVG('#ff5d73','#c9184a','knee')},
+  {id:'n1',slot:'neck',nom:'жемчужные бусы',acc:'жемчужные бусы',svg:beadsSVG('pearl')},
+  {id:'n2',slot:'neck',nom:'розовые бусы',acc:'розовые бусы',svg:beadsSVG('pink')},
+  {id:'n3',slot:'neck',nom:'кулончик-сердечко',acc:'кулончик-сердечко',svg:beadsSVG('heart')},
+  {id:'n4',slot:'neck',nom:'кулончик-звёздочка',acc:'кулончик-звёздочку',svg:beadsSVG('star')},
+  {id:'n5',slot:'neck',nom:'голубой шарфик',acc:'голубой шарфик',svg:beadsSVG('scarf')},
+  {id:'g1',slot:'eyes',nom:'розовые очки',acc:'розовые очки',svg:glassesSVG('round')},
+  {id:'g2',slot:'eyes',nom:'очки-сердечки',acc:'очки-сердечки',svg:glassesSVG('heart')},
+  {id:'g3',slot:'eyes',nom:'очки-звёздочки',acc:'очки-звёздочки',svg:glassesSVG('star')},
+  {id:'g4',slot:'eyes',nom:'синие очки',acc:'синие очки',svg:glassesSVG('square')},
+  {id:'g5',slot:'eyes',nom:'солнечные очки',acc:'солнечные очки',svg:glassesSVG('sun')},
   {id:'b1',slot:'back',nom:'голубые крылышки',acc:'голубые крылышки',svg:wingsSVG('#9ad7ff','#4d9de0',false)},
+  {id:'b5',slot:'back',nom:'голубые крылышки в горошек',acc:'голубые крылышки в горошек',svg:wingsSVG('#9ad7ff','#4d9de0',true)},
   {id:'b2',slot:'back',nom:'розовые крылышки',acc:'розовые крылышки',svg:wingsSVG('#ffb3d9','#ff6fae',true)},
   {id:'b3',slot:'back',nom:'красный плащ',acc:'красный плащ',svg:capeSVG('#e63946','#a4161a',false)},
   {id:'b4',slot:'back',nom:'фиолетовый плащ',acc:'фиолетовый плащ',svg:capeSVG('#8e6bd9','#5b3fa8',true)},
   {id:'w1',slot:'hand',nom:'волшебная палочка',acc:'волшебную палочку',svg:`<line x1="100" y1="30" x2="160" y2="-95" stroke="#8e6bd9" stroke-width="11" stroke-linecap="round"/><path d="${starD(165,-112,40,17)}" fill="#ffd23f" stroke="#e0a800" stroke-width="5" stroke-linejoin="round"/>`},
-  {id:'w2',slot:'hand',nom:'жёлтая сумочка',acc:'жёлтую сумочку',svg:`<path d="M78 40 Q100 -12 122 40" fill="none" stroke="#e0a800" stroke-width="8"/><rect x="66" y="38" width="72" height="62" rx="14" fill="#ffd23f" stroke="#e0a800" stroke-width="6"/><circle cx="102" cy="64" r="9" fill="#ff8fc0"/>`},
-  {id:'w3',slot:'hand',nom:'красный шарик',acc:'красный шарик',svg:`<path d="M100 25 Q135 -80 175 -165" fill="none" stroke="#888" stroke-width="4"/><ellipse cx="180" cy="-230" rx="55" ry="68" fill="#ff5d73" stroke="#c9184a" stroke-width="5"/><path d="M172 -160 L188 -160 L180 -170Z" fill="#c9184a"/><ellipse cx="162" cy="-256" rx="12" ry="20" fill="#fff" opacity=".5"/>`},
-  {id:'w4',slot:'hand',nom:'ромашка',acc:'ромашку',svg:`<path d="M100 25 Q120 -30 140 -78" fill="none" stroke="#3a9e2f" stroke-width="8"/>${[...Array(10)].map((_,j)=>`<ellipse cx="${(140+Math.cos(j*Math.PI/5)*26).toFixed(1)}" cy="${(-95+Math.sin(j*Math.PI/5)*26).toFixed(1)}" rx="17" ry="9" transform="rotate(${j*36} ${(140+Math.cos(j*Math.PI/5)*26).toFixed(1)} ${(-95+Math.sin(j*Math.PI/5)*26).toFixed(1)})" fill="#fff" stroke="#ddd" stroke-width="2"/>`).join('')}<circle cx="140" cy="-95" r="16" fill="#ffd23f"/>`}
+  {id:'w2',slot:'hand',nom:'жёлтая сумочка',acc:'жёлтую сумочку',svg:bagSVG('#ffd23f','#e0a800')},
+  {id:'w6',slot:'hand',nom:'розовая сумочка',acc:'розовую сумочку',svg:bagSVG('#ff8fc0','#e0407f')},
+  {id:'w3',slot:'hand',nom:'красный шарик',acc:'красный шарик',svg:balloonSVG('#ff5d73','#c9184a')},
+  {id:'w5',slot:'hand',nom:'синий шарик',acc:'синий шарик',svg:balloonSVG('#4d9de0','#2f6fb0')},
+  {id:'w4',slot:'hand',nom:'ромашка',acc:'ромашку',svg:`<path d="M100 25 Q120 -30 140 -78" fill="none" stroke="#3a9e2f" stroke-width="8"/>${[...Array(10)].map((_,j)=>{const x=(140+Math.cos(j*Math.PI/5)*26).toFixed(1),y=(-95+Math.sin(j*Math.PI/5)*26).toFixed(1);return `<ellipse cx="${x}" cy="${y}" rx="17" ry="9" transform="rotate(${j*36} ${x} ${y})" fill="#fff" stroke="#ddd" stroke-width="2"/>`;}).join('')}<circle cx="140" cy="-95" r="16" fill="#ffd23f"/>`}
 ];
 const ITEM={};ITEMS.forEach(i=>ITEM[i.id]=i);
-const SLOTS=['dress','head','shoes','back','hand'];
-const SLOTPOS={dress:[0,20],head:[0,-320],shoes:[0,240],back:[0,-120],hand:[120,-20]};
+const SLOTS=['dress','head','shoes','legs','neck','eyes','back','hand'];
+const SLOTPOS={dress:[0,20],head:[0,-320],shoes:[0,240],legs:[0,150],neck:[0,-125],eyes:[0,-236],back:[0,-120],hand:[120,-20]};
 const CHARS=[
   {id:'princess',name:'Принцесса',acc:'принцессу',pron:'её',verb:'идёт',dat:'принцессе',pretty:'Принцесса такая красивая!',skin:'#ffd9c2',hair:'#f2c14e',kind:'girl',hs:'long'},
   {id:'fairy',name:'Фея',acc:'фею',pron:'её',verb:'летит',dat:'фее',pretty:'Фея такая красивая!',skin:'#ffe0cc',hair:'#ff8fc7',kind:'girl',hs:'buns'},
@@ -366,7 +421,7 @@ const CHARS=[
   {id:'cat',name:'Котик',acc:'котика',pron:'его',verb:'идёт',dat:'котику',pretty:'Котик такой красивый!',skin:'#f6b26b',belly:'#ffe2bf',kind:'cat'},
   {id:'bear',name:'Мишка',acc:'мишку',pron:'его',verb:'идёт',dat:'мишке',pretty:'Мишка такой красивый!',skin:'#b07a4f',belly:'#e3c29b',kind:'bear'}
 ];
-const availSlots=ch=>ch.kind==='mermaid'?SLOTS.filter(s=>s!=='shoes'):SLOTS;
+const availSlots=ch=>ch.kind==='mermaid'?SLOTS.filter(s=>s!=='shoes'&&s!=='legs'):SLOTS;
 function charSVG(ch,look){
   const sk=ch.skin,ol='rgba(0,0,0,.15)';const it=s=>look&&look[s]&&ITEM[look[s]]&&availSlots(ch).includes(s)?ITEM[look[s]].svg:'';
   const animal=ch.kind==='cat'||ch.kind==='bear';
@@ -380,7 +435,7 @@ function charSVG(ch,look){
     m+=[[-30,70],[20,70],[-10,120],[30,120],[0,170]].map(([x,y])=>`<path d="M${x-16} ${y} Q${x} ${y+16} ${x+16} ${y}" fill="none" stroke="#24a084" stroke-width="4"/>`).join('');
   }else{
     m+=`<rect x="-54" y="0" width="42" height="238" rx="20" fill="${sk}" stroke="${ol}" stroke-width="3"/><rect x="12" y="0" width="42" height="238" rx="20" fill="${sk}" stroke="${ol}" stroke-width="3"/><ellipse cx="-34" cy="244" rx="30" ry="16" fill="${sk}" stroke="${ol}" stroke-width="3"/><ellipse cx="34" cy="244" rx="30" ry="16" fill="${sk}" stroke="${ol}" stroke-width="3"/>`;
-    m+=it('shoes');
+    m+=it('legs');m+=it('shoes');
   }
   m+=`<path d="M-60 -126 Q-104 -60 -100 18" fill="none" stroke="${sk}" stroke-width="34" stroke-linecap="round"/><path d="M60 -126 Q104 -60 100 18" fill="none" stroke="${sk}" stroke-width="34" stroke-linecap="round"/>`;
   if(animal)m+=`<path d="M-62 -142 Q0 -152 62 -142 L70 28 Q0 40 -70 28 Z" fill="${sk}"/><ellipse cx="0" cy="-40" rx="44" ry="66" fill="${ch.belly}"/>`;
@@ -388,6 +443,7 @@ function charSVG(ch,look){
   m+=it('dress');
   m+=`<circle cx="-100" cy="24" r="23" fill="${sk}" stroke="${ol}" stroke-width="3"/><circle cx="100" cy="24" r="23" fill="${sk}" stroke="${ol}" stroke-width="3"/>`;
   m+=`<rect x="-18" y="-162" width="36" height="34" fill="${sk}"/>`;
+  m+=it('neck');
   if(ch.kind==='cat')m+=`<path d="M-92 -268 L-72 -350 L-24 -306 Z" fill="${sk}" stroke="${ol}" stroke-width="4" stroke-linejoin="round"/><path d="M92 -268 L72 -350 L24 -306 Z" fill="${sk}" stroke="${ol}" stroke-width="4" stroke-linejoin="round"/><path d="M-76 -290 L-70 -330 L-48 -308Z" fill="#ffb3c7"/><path d="M76 -290 L70 -330 L48 -308Z" fill="#ffb3c7"/>`;
   if(ch.kind==='bear')m+=`<circle cx="-72" cy="-305" r="36" fill="${sk}"/><circle cx="72" cy="-305" r="36" fill="${sk}"/><circle cx="-72" cy="-305" r="19" fill="${ch.belly}"/><circle cx="72" cy="-305" r="19" fill="${ch.belly}"/>`;
   m+=`<circle cx="0" cy="-230" r="96" fill="${sk}" stroke="${ol}" stroke-width="4"/>`;
@@ -397,7 +453,7 @@ function charSVG(ch,look){
   else if(ch.kind==='bear')m+=`<ellipse cx="0" cy="-210" rx="15" ry="11" fill="#4a2f1d"/><path d="M-14 -190 Q0 -178 14 -190" fill="none" stroke="#4a2f1d" stroke-width="5" stroke-linecap="round"/>`;
   else m+=`<path d="M-22 -192 Q0 -170 22 -192" fill="none" stroke="#c2185b" stroke-width="6" stroke-linecap="round"/>`;
   if(ch.hair)m+=`<path d="M-98 -232 Q-102 -332 0 -334 Q102 -332 98 -232 Q78 -284 32 -280 Q0 -302 -32 -280 Q-78 -284 -98 -232 Z" fill="${ch.hair}"/>`;
-  m+=it('head');m+=it('hand');
+  m+=it('eyes');m+=it('head');m+=it('hand');
   return m;
 }
 
@@ -408,134 +464,348 @@ function eventBG(kind){
   if(kind==='party')return base('#fff1d2')+`<path d="M510 230 Q805 330 1100 230" fill="none" stroke="#c9a46a" stroke-width="4"/>${[...Array(9)].map((_,i)=>{const x=550+i*64,y=230+Math.sin(Math.PI*(i+.5)/9)*86;const c=['#ff5d73','#ffd23f','#3bceac','#4d9de0','#b388eb'][i%5];return `<path d="M${x-22} ${y-6} L${x+22} ${y-6} L${x} ${y+40}Z" fill="${c}"/>`;}).join('')}${[[570,560,'#ff5d73'],[620,500,'#4d9de0'],[1040,540,'#ffd23f'],[990,480,'#3bceac']].map(([x,y,c])=>`<path d="M${x} ${y+60} Q${x+10} ${y+180} ${x} ${y+330}" fill="none" stroke="#999" stroke-width="3"/><ellipse cx="${x}" cy="${y}" rx="48" ry="60" fill="${c}"/>`).join('')}`;
   return base('#dff4ff')+`<circle cx="1030" cy="260" r="55" fill="#ffe066"/><path d="M500 760 Q805 690 1110 760 L1110 900 Q1110 955 1050 955 L560 955 Q500 955 500 900Z" fill="#9be08a"/>${[[585,560],[1030,600]].map(([x,y])=>`<rect x="${x-14}" y="${y}" width="28" height="180" fill="#8a5a3c"/><circle cx="${x}" cy="${y-20}" r="80" fill="#5cc46a"/><circle cx="${x-40}" cy="${y+20}" r="50" fill="#4fb35d"/>`).join('')}<g fill="#fff">${[[650,260],[700,240],[740,262]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="32"/>`).join('')}</g>`;
 }
+const SLOTNAME={dress:'платье',head:'на голову',shoes:'обувь',legs:'носочки',neck:'бусы',eyes:'очки',back:'крылья',hand:'в руку'};
 function dressScene(){
   document.body.style.background='#fde8f1';
-  let ch=CHARS[S.charIdx]||CHARS[0];let look=Object.assign({},S.looks[ch.id]||{});
-  let cat='dress',idrag=null,order=null;
-  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fde8f1"/><rect x="40" y="160" width="430" height="800" rx="50" fill="#fff" stroke="#f6c6dc" stroke-width="8"/><rect x="1130" y="160" width="430" height="800" rx="50" fill="#f9d3e4"/>`;
-  const bgG=el('g',{},sceneG),podG=el('g',{},sceneG),headsG=el('g',{},sceneG),charG=el('g',{},sceneG),cardG=el('g',{},sceneG),shelfG=el('g',{},sceneG),catsG=el('g',{},sceneG),actG=el('g',{},sceneG),dragL=el('g',{},sceneG);
-  const cx=()=>order?885:800;
+  let ch=CHARS[S.charIdx]||CHARS[0];let look={};
+  let cat='dress',idrag=null,order=null,free=false;
+  const CS=.82,CY=478;
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fde8f1"/>`;
+  const panG=el('g',{},sceneG),bgG=el('g',{},sceneG),refG=el('g',{},sceneG),charG=el('g',{},sceneG),headsG=el('g',{},sceneG),shelfG=el('g',{},sceneG),catsG=el('g',{},sceneG),actG=el('g',{},sceneG),dragL=el('g',{},sceneG);
+  const dollX=()=>free?570:845;
   function thumb(parent,markup,x,y,w,h,maxS){const g=el('g',{},parent);g.innerHTML=markup;const bb=g.getBBox();const s=Math.min(w/bb.width,h/bb.height,maxS||1.6);g.setAttribute('transform',`translate(${x-(bb.x+bb.width/2)*s},${y-(bb.y+bb.height/2)*s}) scale(${s})`);return g;}
-  function renderChar(){podG.innerHTML=`<ellipse cx="${cx()}" cy="882" rx="250" ry="42" fill="${order&&order.complete?'rgba(0,0,0,.08)':'#f3c2d7'}"/>`;charG.innerHTML=`<g transform="translate(${cx()},592)"><g id="charInner">${charSVG(ch,look)}</g></g>`;}
+  function renderPanels(){
+    panG.innerHTML=free?`<rect x="30" y="150" width="1080" height="605" rx="40" fill="#fff" stroke="#f6c6dc" stroke-width="6"/>`:
+      `<rect x="30" y="150" width="530" height="605" rx="40" fill="#fff4f9" stroke="#ff9ecb" stroke-width="8"/><rect x="580" y="150" width="530" height="605" rx="40" fill="#fff" stroke="#f6c6dc" stroke-width="6" stroke-dasharray="18 12"/>`;
+    panG.innerHTML+=`<rect x="30" y="772" width="1080" height="200" rx="40" fill="#fff" stroke="#f6c6dc" stroke-width="6"/><rect x="1128" y="150" width="445" height="822" rx="40" fill="#f9d3e4"/>`;
+    bgG.innerHTML=order&&order.complete?`<clipPath id="dollclip"><rect x="584" y="154" width="522" height="597" rx="36"/></clipPath><g clip-path="url(#dollclip)"><g transform="translate(580,150) scale(${530/610},${605/790}) translate(-500,-165)">${eventBG(order.ev.bg)}</g></g>`:'';
+  }
+  function renderRef(){
+    refG.innerHTML='';if(free||!order)return;
+    const g=el('g',{id:'refInner'},refG);
+    g.innerHTML=`<ellipse cx="295" cy="712" rx="170" ry="26" fill="#ffd6e8"/><g transform="translate(295,${CY}) scale(${CS})">${charSVG(ch,order.look)}</g>`;
+    const n=order.slots.length;order.slots.forEach((sl,i)=>{const x=295-(n-1)*22+i*44,y=182,d=order.done[sl];el('circle',{cx:x,cy:y,r:16,fill:d?'#3bceac':'#fff',stroke:d?'#24a084':'#ff9ecb','stroke-width':4},g);if(d)el('path',{d:`M${x-8} ${y} L${x-2} ${y+7} L${x+9} ${y-7}`,fill:'none',stroke:'#fff','stroke-width':4,'stroke-linecap':'round'},g);});
+    el('g',{},g).innerHTML=`<path d="${starD(70,195,24,11)}" fill="#ffd23f" stroke="#e0a800" stroke-width="4"/>`;
+  }
+  function renderChar(){charG.innerHTML=`<ellipse cx="${dollX()}" cy="712" rx="170" ry="26" fill="${order&&order.complete?'rgba(0,0,0,.08)':'#f3e6ee'}"/><g transform="translate(${dollX()},${CY}) scale(${CS})"><g id="charInner">${charSVG(ch,look)}</g></g>`;}
   function wobble(id){const c=$(id);if(!c)return;c.classList.remove('wiggle');void c.getBBox();c.classList.add('wiggle');}
-  function renderHeads(){headsG.innerHTML='';CHARS.forEach((c,i)=>{const x=590+i*105,y=82,cur=c.id===ch.id;const g=el('g',{},headsG);g.innerHTML=`<circle cx="${x}" cy="${y}" r="50" fill="${cur?'#ff8fc0':'#fff'}" stroke="#ec7fb0" stroke-width="${cur?7:3}"/><clipPath id="hc${i}"><circle cx="${x}" cy="${y}" r="45"/></clipPath><g clip-path="url(#hc${i})"><g transform="translate(${x},${y+230*.4+12}) scale(.4)">${charSVG(c,S.looks[c.id]||{})}</g></g>`;tap(g,()=>{if(cur)return;S.charIdx=i;save();ch=c;cat='dress';SFX.pop();if(order)startOrder();else{look=Object.assign({},S.looks[ch.id]||{});say(c.name);renderAll();}});});}
-  function renderCats(){catsG.innerHTML='';availSlots(ch).forEach((sl,i)=>{const y=180+i*122,sel=sl===cat;const g=el('g',{},catsG);el('rect',{x:1150,y,width:390,height:108,rx:32,fill:sel?'#ff8fc0':'#fff',stroke:sel?'#e0407f':'none','stroke-width':5},g);ITEMS.filter(t=>t.slot===sl).slice(0,3).forEach((t,k)=>thumb(g,t.svg,1218+k*127,y+54,105,88,.9));tap(g,()=>{if(cat===sl)return;cat=sl;SFX.pop();renderCats();renderShelf();});});}
-  function renderShelf(){shelfG.innerHTML='';ITEMS.filter(t=>t.slot===cat).forEach((it,k)=>{const x=150+(k%2)*210,y=300+Math.floor(k/2)*250,worn=look[it.slot]===it.id;const g=el('g',{class:'btn'},shelfG);el('rect',{x:x-96,y:y-116,width:192,height:232,rx:34,fill:worn?'#ffe3f0':'#faf4f8',stroke:worn?'#ff6fae':'none','stroke-width':7},g);thumb(g,it.svg,x,y,150,190);if(worn)el('g',{},g).innerHTML=`<circle cx="${x+72}" cy="${y-92}" r="24" fill="#3bceac"/><path d="M${x+60} ${y-92} L${x+70} ${y-81} L${x+86} ${y-102}" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`;g.addEventListener('pointerdown',e=>startDrag(e,it,x,y));});}
-  function renderCard(){
-    cardG.innerHTML='';bgG.innerHTML=order&&order.complete?eventBG(order.ev.bg):'';
-    if(!order)return;
-    if(order.complete){const g=el('g',{},cardG);const inner=el('g',{class:'pulse'},g);inner.innerHTML=`<circle cx="575" cy="300" r="85" fill="#3bceac" stroke="#fff" stroke-width="9"/><path d="M548 258 L608 300 L548 342 Z" fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round"/>`;tap(g,()=>{SFX.pop();startOrder();});return;}
-    const wrap=el('g',{transform:'rotate(-3 565 370)'},cardG);const inner=el('g',{id:'cardInner'},wrap);
-    inner.innerHTML=`<rect x="472" y="168" width="190" height="410" rx="22" fill="#fff" stroke="#f0b6d0" stroke-width="5"/><rect x="484" y="182" width="166" height="250" rx="14" fill="#fde8f1"/><circle cx="567" cy="170" r="13" fill="#ff5d73"/><g transform="translate(567,322) scale(.33)">${charSVG(ch,order.look)}</g>`;
-    order.slots.forEach((sl,i)=>{const x=512+(i%3)*55,y=470+Math.floor(i/3)*62;const done=order.done[sl];const it=ITEM[order.look[sl]];el('rect',{x:x-25,y:y-27,width:50,height:54,rx:10,fill:done?'#e3fff6':'#faf4f8'},inner);thumb(inner,it.svg,x,y,42,46,.5);if(done)el('g',{},inner).innerHTML=`<circle cx="${x+18}" cy="${y-20}" r="13" fill="#3bceac"/><path d="M${x+11} ${y-20} L${x+16} ${y-14} L${x+25} ${y-26}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;});
-  }
+  function renderHeads(){headsG.innerHTML='';CHARS.forEach((c,i)=>{const x=560+i*105,y=78,cur=c.id===ch.id;const g=el('g',{},headsG);g.innerHTML=`<circle cx="${x}" cy="${y}" r="48" fill="${cur?'#ff8fc0':'#fff'}" stroke="#ec7fb0" stroke-width="${cur?7:3}"/><clipPath id="hc${i}"><circle cx="${x}" cy="${y}" r="43"/></clipPath><g clip-path="url(#hc${i})"><g transform="translate(${x},${y+230*.38+12}) scale(.38)">${charSVG(c,{})}</g></g>`;tap(g,()=>{if(cur)return;S.charIdx=i;save();ch=c;cat='dress';SFX.pop();if(free){look=Object.assign({},S.looks[ch.id]||{});say(c.name);renderAll();}else startOrder();});});}
+  function renderCats(){catsG.innerHTML='';availSlots(ch).forEach((sl,i)=>{const x=1145+(i%2)*212,y=165+Math.floor(i/2)*150,sel=sl===cat;const need=order&&!free&&order.slots.includes(sl)&&!order.done[sl];const g=el('g',{},catsG);el('rect',{x,y,width:200,height:138,rx:28,fill:sel?'#ff8fc0':'#fff',stroke:sel?'#e0407f':(need?'#ffd23f':'none'),'stroke-width':sel?5:6},g);const first=ITEMS.find(t=>t.slot===sl);thumb(g,first.svg,x+100,y+69,150,110,1.2);if(need)el('circle',{cx:x+182,cy:y+18,r:12,fill:'#ffd23f',stroke:'#fff','stroke-width':3},g);tap(g,()=>{if(cat===sl)return;cat=sl;SFX.pop();renderCats();renderShelf();});});}
+  function renderShelf(){shelfG.innerHTML='';const its=ITEMS.filter(t=>t.slot===cat);const cw=Math.min(150,1050/its.length);its.forEach((it,k)=>{const x=570-its.length*cw/2+cw*(k+.5),y=872,worn=look[it.slot]===it.id;const g=el('g',{class:'btn'},shelfG);el('rect',{x:x-cw/2+6,y:y-88,width:cw-12,height:176,rx:26,fill:worn?'#ffe3f0':'#faf4f8',stroke:worn?'#ff6fae':'none','stroke-width':6},g);thumb(g,it.svg,x,y,cw-32,150,1.6);g.addEventListener('pointerdown',e=>startDrag(e,it,x,y,cw));});}
   function renderAct(){actG.innerHTML='';
-    const b=(x,col,icon,fn,pulse)=>{const g=el('g',{},actG);const inner=el('g',{class:pulse?'pulse':''},g);inner.innerHTML=`<circle cx="${x}" cy="875" r="62" fill="${col}" stroke="#fff" stroke-width="7"/>${icon}`;tap(g,fn);};
-    b(1215,order?'#ffd23f':'#ff8fc0',`<g transform="rotate(-6 1215 875)"><rect x="1182" y="830" width="66" height="88" rx="8" fill="#fff"/><rect x="1189" y="838" width="52" height="54" rx="5" fill="${order?'#ffe9a8':'#ffd1e6'}"/><path d="${starD(1215,865,17,8)}" fill="${order?'#e0a800':'#ff5d9e'}"/></g>`,()=>{if(order){stopOrder();return;}startOrder();},!order);
-    b(1345,'#4d9de0',`<rect x="1303" y="848" width="84" height="60" rx="12" fill="#fff"/><rect x="1325" y="838" width="36" height="16" rx="5" fill="#fff"/><circle cx="1345" cy="878" r="19" fill="#4d9de0"/><circle cx="1345" cy="878" r="11" fill="#fff"/>`,photo);
-    b(1475,'#3bceac',`<rect x="1440" y="845" width="62" height="62" rx="8" fill="#fff" transform="rotate(-10 1471 876)"/><rect x="1450" y="840" width="62" height="62" rx="8" fill="#e6fff8" stroke="#fff" stroke-width="4" transform="rotate(8 1481 871)"/><circle cx="1470" cy="864" r="9" fill="#ffd23f"/><path d="M1456 895 L1475 875 L1500 895Z" fill="#3bceac"/>`,openAlbum);
+    const b=(x,col,icon,fn,pulse)=>{const g=el('g',{},actG);const inner=el('g',{class:pulse?'pulse':''},g);inner.innerHTML=`<circle cx="${x}" cy="880" r="62" fill="${col}" stroke="#fff" stroke-width="7"/>${icon}`;tap(g,fn);};
+    b(1215,free?'#ffd23f':'#ff8fc0',free?`<g transform="rotate(-6 1215 875)"><rect x="1182" y="832" width="66" height="88" rx="8" fill="#fff"/><path d="${starD(1215,867,17,8)}" fill="#e0a800"/></g>`:`<path d="M1185 860 L1215 840 L1245 860 L1235 868 L1235 915 L1195 915 L1195 868 Z" fill="#fff"/>`,()=>{SFX.pop();if(free){free=false;startOrder();}else{free=true;order=null;look=Object.assign({},S.looks[ch.id]||{});renderAll();say('Наряжаем как хочешь!');}});
+    b(1345,'#4d9de0',`<rect x="1303" y="853" width="84" height="60" rx="12" fill="#fff"/><rect x="1325" y="843" width="36" height="16" rx="5" fill="#fff"/><circle cx="1345" cy="883" r="19" fill="#4d9de0"/><circle cx="1345" cy="883" r="11" fill="#fff"/>`,photo);
+    b(1475,'#3bceac',`<rect x="1440" y="850" width="62" height="62" rx="8" fill="#fff" transform="rotate(-10 1471 881)"/><rect x="1450" y="845" width="62" height="62" rx="8" fill="#e6fff8" stroke="#fff" stroke-width="4" transform="rotate(8 1481 876)"/><circle cx="1470" cy="869" r="9" fill="#ffd23f"/><path d="M1456 900 L1475 880 L1500 900Z" fill="#3bceac"/>`,openAlbum);
+    if(order&&order.complete){const g=el('g',{},actG);const inner=el('g',{class:'pulse'},g);inner.innerHTML=`<circle cx="570" cy="872" r="85" fill="#3bceac" stroke="#fff" stroke-width="9"/><path d="M545 832 L605 872 L545 912 Z" fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round"/>`;tap(g,()=>{SFX.pop();startOrder();});}
   }
-  function renderAll(){renderHeads();renderChar();renderCard();renderCats();renderShelf();renderAct();}
-  function commit(){if(!order){S.looks[ch.id]=Object.assign({},look);save();}renderChar();renderShelf();renderHeads();}
+  function renderAll(){renderPanels();renderRef();renderChar();renderHeads();renderCats();renderShelf();renderAct();}
   function startOrder(){
-    const av=availSlots(ch);const n=Math.min(av.length,[1,2,3,99][Math.min(S.orderLvl||0,3)]);
-    let slots=shuffle(av.filter(s=>s!=='dress')).slice(0,n-1);slots=['dress',...slots].slice(0,n);
-    slots.sort((a,b)=>SLOTS.indexOf(a)-SLOTS.indexOf(b));
+    free=false;const av=availSlots(ch);const n=Math.min(av.length,[2,4,6,8][Math.min(S.orderLvl||0,3)]);
+    let slots=['dress',...shuffle(av.filter(s=>s!=='dress')).slice(0,n-1)];slots.sort((a,b)=>SLOTS.indexOf(a)-SLOTS.indexOf(b));
     const ol={};slots.forEach(sl=>{const opts=ITEMS.filter(t=>t.slot===sl);ol[sl]=opts[rnd(opts.length)].id;});
     order={slots,look:ol,done:{},ev:EVENTS[rnd(EVENTS.length)],complete:false};
     look={};cat=slots[0];renderAll();
     say(`${ch.name} ${ch.verb} ${order.ev.t}! Наряди ${ch.pron} как на картинке!`,250);
   }
-  function stopOrder(){order=null;look=Object.assign({},S.looks[ch.id]||{});cat='dress';SFX.pop();renderAll();}
   function equip(it,isTap){
-    const [sx,sy]=SLOTPOS[it.slot];const px=cx()+sx,py=592+sy;
-    if(order){
+    const [sx,sy]=SLOTPOS[it.slot];const px=dollX()+sx*CS,py=CY+sy*CS;
+    if(!free&&order){
       if(order.complete)return;
       if(order.look[it.slot]===it.id&&!order.done[it.slot]){
-        look[it.slot]=it.id;order.done[it.slot]=true;commit();renderCard();SFX.sparkle();burst(px,py);
+        look[it.slot]=it.id;order.done[it.slot]=true;renderChar();renderRef();renderShelf();SFX.sparkle();burst(px,py);
         const left=order.slots.filter(s=>!order.done[s]);
         if(!left.length){
           order.complete=true;S.orderWins=(S.orderWins||0)+1;if(S.orderWins%2===0)S.orderLvl=Math.min(3,(S.orderLvl||0)+1);
           S.album.unshift({c:ch.id,l:Object.assign({},look)});S.album=S.album.slice(0,8);save();
-          setTimeout(()=>{renderChar();renderCard();SFX.tada();confetti(cx(),420);addStar(cx(),400);say(`Ура! ${ch.pretty} Можно ${ch.verb==='летит'?'лететь':ch.verb==='плывёт'?'плыть':'идти'} ${order.ev.t}!`);},350);
-        }else{say(it.nom);cat=left[0];setTimeout(()=>{renderCats();renderShelf();},500);}
+          setTimeout(()=>{renderPanels();renderChar();renderAct();SFX.tada();confetti(dollX(),420);addStar(dollX(),400);say(`Ура! Точно как на картинке! ${ch.pretty} Можно ${ch.verb==='летит'?'лететь':ch.verb==='плывёт'?'плыть':'идти'} ${order.ev.t}!`);},350);
+        }else{say(it.nom);renderCats();}
       }else if(order.done[it.slot]&&look[it.slot]===it.id){SFX.pop();}
-      else{SFX.wrong();wobble('cardInner');say('Не то. Посмотри на картинку!');}
+      else if(!order.slots.includes(it.slot)){SFX.wrong();wobble('refInner');say('На картинке этого нет. Посмотри внимательно!');}
+      else{SFX.wrong();wobble('refInner');say(`Это ${it.nom}. Посмотри на картинку!`);}
       return;
     }
-    if(isTap&&look[it.slot]===it.id){delete look[it.slot];commit();SFX.back();return;}
-    look[it.slot]=it.id;commit();SFX.sparkle();burst(px,py);say(it.nom);
+    if(isTap&&look[it.slot]===it.id){delete look[it.slot];S.looks[ch.id]=Object.assign({},look);save();renderChar();renderShelf();SFX.back();return;}
+    look[it.slot]=it.id;S.looks[ch.id]=Object.assign({},look);save();renderChar();renderShelf();SFX.sparkle();burst(px,py);say(it.nom);
   }
-  function startDrag(e,it,x,y){
-    if(idrag)return;e.preventDefault();const q=pt(e);const g=el('g',{},dragL);thumb(g,it.svg,0,0,150,190);g.setAttribute('transform',`translate(${x},${y})`);g.setAttribute('opacity','0');
+  function startDrag(e,it,x,y,cw){
+    if(idrag)return;e.preventDefault();const q=pt(e);const g=el('g',{},dragL);thumb(g,it.svg,0,0,170,200);g.setAttribute('transform',`translate(${x},${y})`);g.setAttribute('opacity','0');
     idrag={it,g,id:e.pointerId,sx:q.x,sy:q.y,cx:x,cy:y,x,y,moved:false};SFX.pick();
   }
-  onMove=e=>{if(!idrag||e.pointerId!==idrag.id)return;const q=pt(e);const dx=q.x-idrag.sx,dy=q.y-idrag.sy;if(!idrag.moved&&Math.hypot(dx,dy)>18){idrag.moved=true;idrag.g.setAttribute('opacity','1');}idrag.x=idrag.cx+dx;idrag.y=idrag.cy+dy;idrag.g.setAttribute('transform',`translate(${idrag.x},${idrag.y}) scale(1.15)`);};
+  onMove=e=>{if(!idrag||e.pointerId!==idrag.id)return;const q=pt(e);const dx=q.x-idrag.sx,dy=q.y-idrag.sy;if(!idrag.moved&&Math.hypot(dx,dy)>18){idrag.moved=true;idrag.g.setAttribute('opacity','1');}idrag.x=idrag.cx+dx;idrag.y=idrag.cy+dy;idrag.g.setAttribute('transform',`translate(${idrag.x},${idrag.y})`);};
   onUp=e=>{if(!idrag||e.pointerId!==idrag.id)return;const d=idrag;idrag=null;
     if(!d.moved){d.g.remove();equip(d.it,true);return;}
-    if(d.x>480&&d.x<1110&&d.y>150&&d.y<960){d.g.remove();equip(d.it,false);return;}
+    const x0=free?30:580;if(d.x>x0&&d.x<1110&&d.y>140&&d.y<770){d.g.remove();equip(d.it,false);return;}
     const sx=d.x,sy=d.y;SFX.back();tween(320,t=>d.g.setAttribute('transform',`translate(${sx+(d.cx-sx)*t},${sy+(d.cy-sy)*t})`),()=>d.g.remove(),ease.back);};
   function photo(){SFX.click();const fl=el('rect',{x:-2000,y:-2000,width:5600,height:5000,fill:'#fff'},fxG);tween(450,t=>fl.setAttribute('opacity',1-t),()=>fl.remove());S.album.unshift({c:ch.id,l:Object.assign({},look)});S.album=S.album.slice(0,8);save();say('Какая красота! Фото в альбоме.',300);}
   function openAlbum(){SFX.pop();const ov=el('g',{},uiG);ov.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="rgba(80,30,70,.55)"/><rect x="150" y="80" width="1300" height="860" rx="56" fill="#fff"/>`;
     if(!S.album.length)ov.innerHTML+=`<g opacity=".35"><rect x="700" y="420" width="200" height="140" rx="24" fill="#4d9de0"/><circle cx="800" cy="490" r="44" fill="#fff"/></g>`;
-    S.album.forEach((a,i)=>{const c=CHARS.find(x=>x.id===a.c)||CHARS[0];const x=320+(i%4)*320,y=300+Math.floor(i/4)*400;const g=el('g',{},ov);g.innerHTML=`<rect x="${x-140}" y="${y-185}" width="280" height="370" rx="30" fill="#fde8f1" stroke="#f6c6dc" stroke-width="6"/><g transform="translate(${x},${y+40}) scale(.46)">${charSVG(c,a.l)}</g>`;tap(g,()=>{S.charIdx=CHARS.indexOf(c);ch=c;order=null;look=Object.assign({},a.l);cat='dress';S.looks[c.id]=Object.assign({},look);save();ov.remove();SFX.sparkle();say(c.name);renderAll();});});
+    S.album.forEach((a,i)=>{const c=CHARS.find(x=>x.id===a.c)||CHARS[0];const x=320+(i%4)*320,y=300+Math.floor(i/4)*400;const g=el('g',{},ov);g.innerHTML=`<rect x="${x-140}" y="${y-185}" width="280" height="370" rx="30" fill="#fde8f1" stroke="#f6c6dc" stroke-width="6"/><g transform="translate(${x},${y+40}) scale(.46)">${charSVG(c,a.l)}</g>`;tap(g,()=>{S.charIdx=CHARS.indexOf(c);ch=c;free=true;order=null;look=Object.assign({},a.l);cat='dress';S.looks[c.id]=Object.assign({},look);save();ov.remove();SFX.sparkle();say(c.name);renderAll();});});
     const x=el('g',{},ov);x.innerHTML=`<circle cx="1420" cy="110" r="58" fill="#ff5d73" stroke="#fff" stroke-width="8"/><path d="M1395 85 L1445 135 M1445 85 L1395 135" stroke="#fff" stroke-width="14" stroke-linecap="round"/>`;tap(x,()=>{SFX.pop();ov.remove();});
   }
-  renderAll();drawUI(false);
-  say('Наряжаем '+ch.acc+'!',400);
+  drawUI(false);startOrder();
 }
 
 /* ================= LETTERS & NUMBERS ================= */
-const LETTERS=[['А','а','арбуз'],['О','о','облако'],['У','у','утка'],['И','и','ирис'],['М','эм','мама'],['П','пэ','папа'],['Б','бэ','банан'],['Д','дэ','дом'],['К','ка','кот'],['Т','тэ','торт'],['Н','эн','нос'],['Л','эль','лиса'],['С','эс','сок'],['Р','эр','рыба'],['Ы','ы','сыр'],['Э','э','эхо'],['Я','я','яблоко'],['Е','е','ель'],['Ю','ю','юла'],['Ё','ё','ёжик'],['В','вэ','волк'],['Г','гэ','гусь'],['З','зэ','заяц'],['Ж','жэ','жук'],['Ш','ша','шар'],['Х','ха','хлеб'],['Ф','эф','флаг'],['Ц','цэ','цветок'],['Ч','че','чай'],['Щ','ща','щенок'],['Й','и краткое','йогурт'],['Ь','мягкий знак',''],['Ъ','твёрдый знак','']];
-const NUMS=['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять'];
-const NUMACC=['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять'];
+const LETTERS=[['А','а','арбуз'],['О','о','облако'],['У','у','утка'],['И','и','ирис'],['М','эм','мама'],['П','пэ','папа'],['Б','бэ','банан'],['Д','дэ','дом'],['К','ка','кот'],['Т','тэ','торт'],['Н','эн','нос'],['Л','эль','лиса'],['С','эс','сок'],['Р','эр','рыба'],['Ы','ы',''],['Э','э','эхо'],['Я','я','яблоко'],['Е','е','ель'],['Ю','ю','юла'],['Ё','ё','ёжик'],['В','вэ','волк'],['Г','гэ','гусь'],['З','зэ','заяц'],['Ж','жэ','жук'],['Ш','ша','шар'],['Х','ха','хлеб'],['Ф','эф','флаг'],['Ц','цэ','цветок'],['Ч','че','чай'],['Щ','ща','щенок'],['Й','и краткое','йогурт'],['Ь','мягкий знак',''],['Ъ','твёрдый знак','']];
+function numName(n){const o=['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять'],t=['десять','одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'],d=['','','двадцать','тридцать','сорок','пятьдесят','шестьдесят','семьдесят','восемьдесят','девяносто'];if(n<10)return o[n];if(n<20)return t[n-10];return d[Math.floor(n/10)]+(n%10?' '+o[n%10]:'');}
 const COUNT=['','Раз!','Раз, два!','Раз, два, три!','Раз, два, три, четыре!','Раз, два, три, четыре, пять!','Раз, два, три, четыре, пять, шесть!','Раз, два, три, четыре, пять, шесть, семь!','Раз, два, три, четыре, пять, шесть, семь, восемь!','Раз, два, три, четыре, пять, шесть, семь, восемь, девять!','Раз, два, три, четыре, пять, шесть, семь, восемь, девять, десять!'];
-const BCOL=[['#ff5d73','#c9184a'],['#ffd23f','#e0a800'],['#3bceac','#24a084'],['#4d9de0','#2f6fb0'],['#b388eb','#7b4fc9'],['#ff9f1c','#d97a00']];
+const SCOL=[{c:'#ff5d73',dk:'#c9184a',m:'красном',f:'красной'},{c:'#4d9de0',dk:'#2f6fb0',m:'синем',f:'синей'},{c:'#ffd23f',dk:'#d9a400',m:'жёлтом',f:'жёлтой'},{c:'#5cc46a',dk:'#2e9e5b',m:'зелёном',f:'зелёной'},{c:'#b388eb',dk:'#7b4fc9',m:'фиолетовом',f:'фиолетовой'},{c:'#ff9f1c',dk:'#d97a00',m:'оранжевом',f:'оранжевой'}];
+const SSHP=[{k:'circle',w:'шарике',fem:false},{k:'square',w:'квадрате',fem:false},{k:'tri',w:'треугольнике',fem:false},{k:'star',w:'звёздочке',fem:true},{k:'heart',w:'сердечке',fem:false}];
+function shapeSVG(k,c,dk){const a=`fill="${c}" stroke="${dk}" stroke-width="8" stroke-linejoin="round"`;
+  if(k==='square')return `<rect x="-130" y="-130" width="260" height="260" rx="34" ${a}/>`;
+  if(k==='tri')return `<path d="M0 -160 L160 125 L-160 125 Z" ${a}/>`;
+  if(k==='star')return `<path d="${starD(0,10,175,85)}" ${a}/>`;
+  if(k==='heart')return `<path d="M0 150 C-190 30 -170 -150 -60 -140 C-20 -136 0 -100 0 -80 C0 -100 20 -136 60 -140 C170 -150 190 30 0 150Z" ${a}/>`;
+  return `<circle r="140" ${a}/><ellipse cx="-55" cy="-65" rx="34" ry="20" fill="#fff" opacity=".45" transform="rotate(-35 -55 -65)"/>`;}
 function abcScene(){
   document.body.style.background='#d9ecff';
   const tk=token;let mode=S.abcMode,target=null,busy=false,bubbles=[];
   sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#d9ecff"/><path d="M-2000 830 Q400 800 800 830 T 3600 830 L3600 3000 L-2000 3000 Z" fill="#9fd3f5"/>`;
   const topG=el('g',{},sceneG),bubG=el('g',{},sceneG),extraG=el('g',{},sceneG);
-  function pool(){if(mode==='num'){const max=[3,5,7,10][Math.min(S.numLvl,3)];return [...Array(max)].map((_,i)=>i+1);}const n=[4,8,12,16,20,26,33][Math.min(S.abcLvl,6)];return LETTERS.slice(0,n).map(l=>l[0]);}
-  const nameOf=v=>mode==='num'?NUMS[v]:LETTERS.find(l=>l[0]===v)[1];
-  const askText=()=>mode==='num'?`Найди цифру ${NUMACC[target]}!`:`Найди букву ${nameOf(target)}!`;
+  const lvl=()=>mode==='num'?S.numLvl:S.abcLvl;
+  function numPool(){const L=Math.min(S.numLvl,6);return [[1,3],[1,5],[1,7],[1,10],[10,20],[10,50],[10,99]][L];}
+  function pickValues(){
+    if(mode==='num'){const [lo,hi]=numPool();const t=lo+rnd(hi-lo+1);const set=new Set([t]);
+      if(t>=10){const rev=(t%10)*10+Math.floor(t/10);if(t%10&&rev!==t&&rev>=10)set.add(rev);set.add(t+1<=99?t+1:t-1);}
+      let guard=0;while(set.size<4&&guard++<200){const v=lo+rnd(hi-lo+1);set.add(v);}
+      return {t,vals:[...set].slice(0,4)};}
+    const n=[4,8,12,16,20,26,33][Math.min(S.abcLvl,6)];const p=LETTERS.slice(0,n).map(l=>l[0]);const t=p[rnd(p.length)];return {t,vals:[t,...shuffle(p.filter(v=>v!==t)).slice(0,3)]};
+  }
+  const nameOf=v=>mode==='num'?numName(v):LETTERS.find(l=>l[0]===v)[1];
+  const kindWord=v=>mode==='num'?(v<10?'цифру':'число'):'букву';
+  const inWord=(c,s)=>`в ${s.fem?c.f:c.m} ${s.w}`;
+  function askText(){return `Найди ${kindWord(target.v)} ${nameOf(target.v)}${target.combo?' '+inWord(target.c,target.s):''}!`;}
   function renderTop(){topG.innerHTML='';[['abc','АБВ',640],['num','123',960]].forEach(([m,lab,x])=>{const sel=m===mode;const g=el('g',{},topG);g.innerHTML=`<rect x="${x-130}" y="40" width="260" height="96" rx="48" fill="${sel?'#4d9de0':'#fff'}" stroke="#4d9de0" stroke-width="6"/><text x="${x}" y="108" text-anchor="middle" font-size="60" fill="${sel?'#fff':'#4d9de0'}">${lab}</text>`;tap(g,()=>{if(sel||busy)return;mode=m;S.abcMode=m;save();SFX.pop();renderTop();round();});});
-    const sp=el('g',{},topG);sp.innerHTML=`<circle cx="1220" cy="88" r="52" fill="#fff" stroke="#ff8f1f" stroke-width="6"/><path d="M1196 74 L1212 74 L1232 56 L1232 120 L1212 102 L1196 102 Z" fill="#ff8f1f"/><path d="M1244 72 Q1256 88 1244 104" fill="none" stroke="#ff8f1f" stroke-width="6" stroke-linecap="round"/>`;tap(sp,()=>{if(target!=null)say(askText());});}
+    const sp=el('g',{},topG);sp.innerHTML=`<circle cx="1220" cy="88" r="52" fill="#fff" stroke="#ff8f1f" stroke-width="6"/><path d="M1196 74 L1212 74 L1232 56 L1232 120 L1212 102 L1196 102 Z" fill="#ff8f1f"/><path d="M1244 72 Q1256 88 1244 104" fill="none" stroke="#ff8f1f" stroke-width="6" stroke-linecap="round"/>`;tap(sp,()=>{if(target)say(askText());});}
   function round(){
     if(tk!==token)return;busy=false;bubG.innerHTML='';extraG.innerHTML='';bubbles=[];
-    const p=pool();target=p[rnd(p.length)];
-    const others=shuffle(p.filter(v=>v!==target)).slice(0,3);const vals=shuffle([target,...others]);
+    const combo=lvl()>=2&&Math.random()<.5;
+    const {t,vals}=pickValues();let items;
+    if(combo){const ci=rnd(SCOL.length),si=rnd(SSHP.length);let oc=(ci+1+rnd(SCOL.length-1))%SCOL.length,os=(si+1+rnd(SSHP.length-1))%SSHP.length;
+      target={v:t,c:SCOL[ci],s:SSHP[si],combo:true};
+      items=[{v:t,c:SCOL[ci],s:SSHP[si]},{v:t,c:SCOL[oc],s:SSHP[si]},{v:t,c:SCOL[ci],s:SSHP[os]},{v:vals[1],c:SCOL[ci],s:SSHP[si]}];
+    }else{target={v:t,combo:false};items=vals.map(v=>({v,c:SCOL[rnd(SCOL.length)],s:SSHP[0]}));}
+    items=shuffle(items);
     const xs=[290,620,980,1310],ys=[480,600,460,590];
-    vals.forEach((v,i)=>{const [c,dk]=BCOL[rnd(BCOL.length)];const g=el('g',{transform:`translate(${xs[i]},${ys[i]})`},bubG);const b=el('g',{class:'bob',style:`animation-delay:${-i*.7}s`},g);const inner=el('g',{},b);
-      inner.innerHTML=`<circle r="140" fill="${c}" stroke="${dk}" stroke-width="8"/><ellipse cx="-55" cy="-65" rx="34" ry="20" fill="#fff" opacity=".45" transform="rotate(-35 -55 -65)"/><text y="60" text-anchor="middle" font-size="${String(v).length>1?150:180}" fill="#fff" stroke="${dk}" stroke-width="10" paint-order="stroke" stroke-linejoin="round">${v}</text>`;
+    items.forEach((it,i)=>{const g=el('g',{transform:`translate(${xs[i]},${ys[i]})`},bubG);const b=el('g',{class:'bob',style:`animation-delay:${-i*.7}s`},g);const inner=el('g',{},b);
+      const ty=it.s.k==='tri'?95:it.s.k==='heart'?45:60;const fs=String(it.v).length>1?140:170;
+      inner.innerHTML=`${shapeSVG(it.s.k,it.c.c,it.c.dk)}<text y="${ty}" text-anchor="middle" font-size="${it.s.k==='tri'?fs*.8:fs}" fill="#fff" stroke="${it.c.dk}" stroke-width="10" paint-order="stroke" stroke-linejoin="round">${it.v}</text>`;
       inner.setAttribute('transform','scale(0)');setTimeout(()=>tween(420,t=>inner.setAttribute('transform',`scale(${t})`),null,ease.back),i*110);
-      const bb={g,inner,v,x:xs[i],y:ys[i]};bubbles.push(bb);tap(g,()=>pick(bb));});
+      const bb={g,inner,it,x:xs[i],y:ys[i]};bubbles.push(bb);tap(g,()=>pick(bb));});
     say(askText(),500);
   }
   function popB(bb){SFX.bubble();burst(bb.x,bb.y);tween(220,t=>{bb.inner.setAttribute('transform',`scale(${1+.3*t})`);bb.inner.setAttribute('opacity',1-t);},()=>bb.g.remove());}
+  function isRight(it){return it.v===target.v&&(!target.combo||(it.c===target.c&&it.s===target.s));}
   function pick(bb){
-    if(busy)return;
-    if(bb.v===target){
+    if(busy)return;const it=bb.it;
+    if(isRight(it)){
       busy=true;popB(bb);setTimeout(()=>bubbles.forEach(o=>{if(o!==bb)popB(o);}),250);SFX.tada();confetti(bb.x,bb.y);addStar(bb.x,bb.y);
-      let wait=2200;
+      let wait=2400;const v=target.v;
       if(mode==='num'){
-        say(`Ура! ${NUMS[target][0].toUpperCase()+NUMS[target].slice(1)}! ${COUNT[target]}`);
-        for(let k=0;k<target;k++){const fx=800+(k-(target-1)/2)*Math.min(140,1300/target),fy=560;const g=el('g',{},extraG);const fi=el('g',{},g);fi.innerHTML=fishSVG(BCOL[k%BCOL.length][0]);g.setAttribute('transform',`translate(${fx},${fy+500}) scale(.5)`);setTimeout(()=>{tween(450,t=>g.setAttribute('transform',`translate(${fx},${fy+500*(1-t)}) scale(.5)`),()=>{fi.classList.add('wiggle');},ease.back);SFX.pop();},700+k*520);}
-        wait=1800+target*520;
-        S.numStreak=(S.numStreak||0)+1;if(S.numStreak>=5){S.numStreak=0;S.numLvl=Math.min(3,S.numLvl+1);}
+        const nm=numName(v);say(`Ура! ${nm[0].toUpperCase()+nm.slice(1)}!`+(v<=10?' '+COUNT[v]:''));
+        if(v<=10){for(let k=0;k<v;k++){const fx=800+(k-(v-1)/2)*Math.min(140,1300/v),fy=560;const g=el('g',{},extraG);const fi=el('g',{},g);fi.innerHTML=fishSVG(SCOL[k%SCOL.length].c);g.setAttribute('transform',`translate(${fx},${fy+500}) scale(.5)`);setTimeout(()=>{tween(450,t=>g.setAttribute('transform',`translate(${fx},${fy+500*(1-t)}) scale(.5)`),()=>{fi.classList.add('wiggle');},ease.back);SFX.pop();},800+k*520);}wait=1900+v*520;}
+        else{const t=el('text',{x:800,y:640,'text-anchor':'middle','font-size':320,fill:'#ff8f1f',stroke:'#fff','stroke-width':16,'paint-order':'stroke'},extraG);t.textContent=v;tween(500,k=>t.setAttribute('transform',`translate(800,560) scale(${k}) translate(-800,-560)`),null,ease.back);}
+        S.numStreak=(S.numStreak||0)+1;if(S.numStreak>=5){S.numStreak=0;S.numLvl=Math.min(6,S.numLvl+1);}
       }else{
-        const L=LETTERS.find(l=>l[0]===target);
-        say(`Ура! Это ${L[1]}!`+(L[2]?` ${L[0]==='Ы'?'Как в слове':'Как'} ${L[2]}!`:''));
-        const t=el('text',{x:800,y:640,'text-anchor':'middle','font-size':320,fill:'#ff8f1f',stroke:'#fff','stroke-width':16,'paint-order':'stroke'},extraG);t.textContent=target;tween(500,k=>t.setAttribute('transform',`translate(800,560) scale(${k}) translate(-800,-560)`),null,ease.back);
+        const L=LETTERS.find(l=>l[0]===v);
+        say(`Ура! Это ${L[1]}!`+(L[2]?` Как ${L[2]}!`:''));
+        const t=el('text',{x:800,y:640,'text-anchor':'middle','font-size':320,fill:'#ff8f1f',stroke:'#fff','stroke-width':16,'paint-order':'stroke'},extraG);t.textContent=v;tween(500,k=>t.setAttribute('transform',`translate(800,560) scale(${k}) translate(-800,-560)`),null,ease.back);
         S.abcStreak=(S.abcStreak||0)+1;if(S.abcStreak>=5){S.abcStreak=0;S.abcLvl=Math.min(6,S.abcLvl+1);}
       }
       save();setTimeout(round,wait);
     }else{
       SFX.wrong();bb.inner.classList.remove('wiggle');void bb.inner.getBBox();bb.inner.classList.add('wiggle');
-      say(`Это ${nameOf(bb.v)}. ${askText()}`);
+      say(`Это ${nameOf(it.v)}${target.combo?' '+inWord(it.c,it.s):''}. ${askText()}`);
     }
   }
   renderTop();drawUI(false);round();
+}
+
+/* ================= PHOTO PUZZLE ================= */
+const PHOTOS=[1,2,3,4,5,6,7,8,9,10].map(i=>`photos/${i}.jpg`);
+function puzzleScene(){
+  document.body.style.background='#fff3e0';
+  const tk=token;const BX=150,BY=175,W=510,H=680;
+  const grids=[[2,2],[2,3],[3,3],[3,4]];const [cols,rows]=grids[Math.min(S.pzLvl||0,3)];
+  const src=PHOTOS[(S.pzIdx||0)%PHOTOS.length];
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fff3e0"/><rect x="${BX-25}" y="${BY-25}" width="${W+50}" height="${H+50}" rx="30" fill="#e9b872"/><rect x="${BX}" y="${BY}" width="${W}" height="${H}" fill="#fff"/><image href="${src}" x="${BX}" y="${BY}" width="${W}" height="${H}" opacity=".2" preserveAspectRatio="xMidYMid slice"/><rect x="720" y="160" width="850" height="800" rx="50" fill="#ffe2bd"/>`;
+  const gridG=el('g',{},sceneG),placedL=el('g',{},sceneG),trayL=el('g',{},sceneG),dragL=el('g',{},sceneG);
+  const cw=W/cols,ch=H/rows;
+  const hv=[...Array(rows)].map(()=>[...Array(cols)].map(()=>Math.random()<.5?1:-1));
+  const vv=[...Array(rows)].map(()=>[...Array(cols)].map(()=>Math.random()<.5?1:-1));
+  function edge(x0,y0,x1,y1,tab){if(!tab)return `L${x1} ${y1}`;const dx=x1-x0,dy=y1-y0,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=uy*tab,ny=-ux*tab;const P=(t,o)=>`${(x0+dx*t+nx*o*L).toFixed(1)} ${(y0+dy*t+ny*o*L).toFixed(1)}`;return `L${P(.38,0)} C${P(.40,.12)} ${P(.28,.28)} ${P(.5,.28)} C${P(.72,.28)} ${P(.60,.12)} ${P(.62,0)} L${x1} ${y1}`;}
+  for(let c=1;c<cols;c++)el('line',{x1:BX+c*cw,y1:BY,x2:BX+c*cw,y2:BY+H,stroke:'#e9b872','stroke-width':2,'stroke-dasharray':'8 8'},gridG);
+  for(let r=1;r<rows;r++)el('line',{x1:BX,y1:BY+r*ch,x2:BX+W,y2:BY+r*ch,stroke:'#e9b872','stroke-width':2,'stroke-dasharray':'8 8'},gridG);
+  const pieces=[];let drag=null,busy=false;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const x0=BX+c*cw,y0=BY+r*ch,x1=x0+cw,y1=y0+ch;
+    const top=r===0?0:-hv[r-1][c],right=c===cols-1?0:vv[r][c],bottom=r===rows-1?0:hv[r][c],left=c===0?0:-vv[r][c-1];
+    const d=`M${x0} ${y0} ${edge(x0,y0,x1,y0,top)} ${edge(x1,y0,x1,y1,right)} ${edge(x1,y1,x0,y1,bottom)} ${edge(x0,y1,x0,y0,left)} Z`;
+    const id='pz'+tk+'_'+pieces.length;const g=el('g',{class:'btn'},trayL);
+    g.innerHTML=`<clipPath id="${id}"><path d="${d}"/></clipPath><image href="${src}" x="${BX}" y="${BY}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/><path class="ol" d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>`;
+    pieces.push({g,cx:x0+cw/2,cy:y0+ch/2,x:0,y:0,s:1,placed:false});
+  }
+  const n=pieces.length,tc=n<=4?2:n<=9?3:4,tr=Math.ceil(n/tc),tw=850/tc,th=800/tr;const ts=Math.min(.9,tw*.86/(cw*1.3),th*.86/(ch*1.3));
+  shuffle([...pieces.keys()]).forEach((pi,k)=>{const p=pieces[pi];p.hx=720+tw*(k%tc+.5);p.hy=160+th*(Math.floor(k/tc)+.5);p.hs=ts;p.x=p.hx;p.y=p.hy+900;p.s=ts;place(p);setTimeout(()=>{if(tk!==token)return;const sy=p.y;tween(500,t=>{p.y=sy+(p.hy-sy)*t;place(p);},null,ease.back);},100+k*80);
+    p.g.addEventListener('pointerdown',e=>{if(drag||p.placed||busy)return;e.preventDefault();const q=pt(e);drag={p,id:e.pointerId,dx:q.x-p.x,dy:q.y-p.y};dragL.appendChild(p.g);SFX.pick();const s0=p.s;tween(150,t=>{p.s=s0+(1-s0)*t;place(p);});});});
+  function place(p){p.g.setAttribute('transform',`translate(${p.x},${p.y}) scale(${p.s}) translate(${-p.cx},${-p.cy})`);}
+  onMove=e=>{if(!drag||e.pointerId!==drag.id)return;const q=pt(e);drag.p.x=q.x-drag.dx;drag.p.y=q.y-drag.dy;place(drag.p);};
+  onUp=e=>{if(!drag||e.pointerId!==drag.id)return;const p=drag.p;drag=null;
+    if(Math.hypot(p.x-p.cx,p.y-p.cy)<Math.max(70,cw*.4)){p.placed=true;const sx=p.x,sy=p.y;tween(160,t=>{p.x=sx+(p.cx-sx)*t;p.y=sy+(p.cy-sy)*t;p.s=1;place(p);},()=>{placedL.appendChild(p.g);p.g.classList.remove('btn');SFX.snap();burst(p.cx,p.cy);if(pieces.every(q=>q.placed))done();});}
+    else{SFX.back();const sx=p.x,sy=p.y,ss=p.s;tween(350,t=>{p.x=sx+(p.hx-sx)*t;p.y=sy+(p.hy-sy)*t;p.s=ss+(p.hs-ss)*t;place(p);},()=>trayL.appendChild(p.g),ease.back);}};
+  function done(){busy=true;setTimeout(()=>{if(tk!==token)return;placedL.querySelectorAll('.ol').forEach(o=>tween(400,t=>o.setAttribute('opacity',1-t)));gridG.remove();SFX.tada();confetti(BX+W/2,BY+H/2);addStar(BX+W/2,BY+H/2);say('Ура! Картинка собралась!');
+      S.pzDone=(S.pzDone||0)+1;if(S.pzDone%2===0)S.pzLvl=Math.min(3,(S.pzLvl||0)+1);S.pzIdx=((S.pzIdx||0)+1)%PHOTOS.length;save();
+      const g=el('g',{},sceneG);const inner=el('g',{class:'pulse'},g);inner.innerHTML=`<circle cx="1145" cy="560" r="130" fill="#3bceac" stroke="#fff" stroke-width="10"/><path d="M1095 495 L1185 560 L1095 625 Z" fill="#fff" stroke="#fff" stroke-width="22" stroke-linejoin="round"/>`;tap(g,()=>{SFX.pop();go(puzzleScene);});},250);}
+  drawUI(false);say('Собери картинку!',400);
+}
+
+/* ================= FIND IN ROOM ================= */
+const FIND=[
+  {s:'Найди что-нибудь красное!',i:'color',c:'#ff5d73'},{s:'Найди что-нибудь синее!',i:'color',c:'#4d9de0'},{s:'Найди что-нибудь жёлтое!',i:'color',c:'#ffd23f'},{s:'Найди что-нибудь зелёное!',i:'color',c:'#5cc46a'},{s:'Найди что-нибудь розовое!',i:'color',c:'#ff8fc0'},{s:'Найди что-нибудь белое!',i:'color',c:'#ffffff'},
+  {s:'Найди что-нибудь круглое!',i:'circle'},{s:'Найди что-нибудь квадратное!',i:'square'},
+  {s:'Принеси мягкую игрушку!',i:'teddy'},{s:'Найди книжку!',i:'book'},{s:'Найди ложку!',i:'spoon'},{s:'Найди свой носочек!',i:'sock'},{s:'Найди мячик!',i:'ball'},{s:'Найди что-нибудь мягкое!',i:'pillow'},
+  {s:'Покажи, где окно!',i:'window'},{s:'Покажи, где дверь!',i:'door'},
+  {s:'Покажи свой носик!',i:'nose'},{s:'Покажи свои ушки!',i:'ears'},{s:'Покажи свои глазки!',i:'eyes'}
+];
+function findIcon(t){const face=(extra)=>`<circle cx="0" cy="0" r="170" fill="#ffd9c2" stroke="#e8b89a" stroke-width="8"/><ellipse cx="-60" cy="-20" rx="16" ry="22" fill="#2b2b3a"/><ellipse cx="60" cy="-20" rx="16" ry="22" fill="#2b2b3a"/><path d="M-40 70 Q0 105 40 70" fill="none" stroke="#c2185b" stroke-width="10" stroke-linecap="round"/><path d="M0 0 Q-14 40 0 46" fill="none" stroke="#c98a6a" stroke-width="8" stroke-linecap="round"/>${extra}`;
+  switch(t.i){
+  case 'color':return `<path d="M-150 -40 Q-170 -170 -20 -160 Q160 -180 160 -20 Q170 150 0 160 Q-170 170 -150 -40Z" fill="${t.c}" stroke="rgba(0,0,0,.15)" stroke-width="8"/><circle cx="-45" cy="-30" r="22" fill="#fff"/><circle cx="45" cy="-30" r="22" fill="#fff"/><circle cx="-40" cy="-26" r="11" fill="#222"/><circle cx="50" cy="-26" r="11" fill="#222"/><path d="M-40 50 Q0 85 40 50" fill="none" stroke="#222" stroke-width="9" stroke-linecap="round"/>`;
+  case 'circle':return `<circle r="150" fill="#ffd23f" stroke="#e0a800" stroke-width="10"/><circle r="70" fill="#fff3b0"/>`;
+  case 'square':return `<rect x="-140" y="-140" width="280" height="280" rx="24" fill="#4d9de0" stroke="#2f6fb0" stroke-width="10"/>`;
+  case 'teddy':return `<circle cx="-85" cy="-120" r="45" fill="#b07a4f"/><circle cx="85" cy="-120" r="45" fill="#b07a4f"/><ellipse cx="0" cy="90" rx="110" ry="90" fill="#b07a4f"/><circle cx="0" cy="-50" r="105" fill="#b07a4f"/><ellipse cx="0" cy="-20" rx="45" ry="34" fill="#e3c29b"/><ellipse cx="0" cy="-32" rx="16" ry="11" fill="#4a2f1d"/><circle cx="-40" cy="-75" r="12" fill="#2b2b3a"/><circle cx="40" cy="-75" r="12" fill="#2b2b3a"/>`;
+  case 'book':return `<path d="M0 -110 Q-90 -150 -180 -120 L-180 120 Q-90 90 0 130 Q90 90 180 120 L180 -120 Q90 -150 0 -110Z" fill="#fff" stroke="#4d9de0" stroke-width="12"/><line x1="0" y1="-110" x2="0" y2="130" stroke="#4d9de0" stroke-width="8"/><g stroke="#bcd" stroke-width="7"><line x1="-140" y1="-60" x2="-40" y2="-55"/><line x1="-140" y1="-10" x2="-40" y2="-5"/><line x1="40" y1="-55" x2="140" y2="-60"/><line x1="40" y1="-5" x2="140" y2="-10"/></g>`;
+  case 'spoon':return `<g transform="rotate(35)"><ellipse cx="0" cy="-90" rx="60" ry="85" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/><rect x="-14" y="-10" width="28" height="190" rx="14" fill="#cfd6de" stroke="#9aa5b1" stroke-width="8"/></g>`;
+  case 'sock':return `<path d="M-40 -160 L50 -160 L50 40 Q50 80 90 100 Q150 130 120 170 Q90 200 20 170 L-60 130 Q-90 110 -70 60 L-40 0 Z" fill="#ff8fc0" stroke="#e0407f" stroke-width="10" stroke-linejoin="round"/><rect x="-45" y="-160" width="100" height="40" fill="#fff" stroke="#e0407f" stroke-width="8"/>`;
+  case 'ball':return `<circle r="150" fill="#ff5d73" stroke="#c9184a" stroke-width="10"/><path d="M-150 0 Q0 60 150 0" fill="none" stroke="#fff" stroke-width="22"/><path d="M0 -150 Q-60 0 0 150" fill="none" stroke="#ffd23f" stroke-width="22"/>`;
+  case 'pillow':return `<path d="M-170 -100 Q0 -140 170 -100 Q140 0 170 100 Q0 140 -170 100 Q-140 0 -170 -100Z" fill="#c8e7ff" stroke="#7bb8e8" stroke-width="10"/><circle cx="0" cy="0" r="22" fill="#7bb8e8"/>`;
+  case 'window':return `<rect x="-150" y="-160" width="300" height="320" rx="16" fill="#bfe8ff" stroke="#8a5a3c" stroke-width="18"/><line x1="0" y1="-160" x2="0" y2="160" stroke="#8a5a3c" stroke-width="14"/><line x1="-150" y1="0" x2="150" y2="0" stroke="#8a5a3c" stroke-width="14"/><circle cx="-80" cy="-90" r="30" fill="#ffe066"/>`;
+  case 'door':return `<rect x="-110" y="-180" width="220" height="360" rx="14" fill="#c58b5a" stroke="#8a5a3c" stroke-width="12"/><rect x="-75" y="-140" width="150" height="110" rx="10" fill="none" stroke="#8a5a3c" stroke-width="8"/><rect x="-75" y="10" width="150" height="130" rx="10" fill="none" stroke="#8a5a3c" stroke-width="8"/><circle cx="70" cy="0" r="14" fill="#ffd23f"/>`;
+  case 'nose':return face(`<circle cx="0" cy="30" r="36" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/>`);
+  case 'ears':return face(`<ellipse cx="-175" cy="0" rx="28" ry="48" fill="#ffd9c2" stroke="#ff5d73" stroke-width="8"/><ellipse cx="175" cy="0" rx="28" ry="48" fill="#ffd9c2" stroke="#ff5d73" stroke-width="8"/>`);
+  case 'eyes':return face(`<circle cx="-60" cy="-20" r="40" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/><circle cx="60" cy="-20" r="40" fill="none" stroke="#ff5d73" stroke-width="8" stroke-dasharray="10 8"/>`);
+  }return '';}
+function findScene(){
+  document.body.style.background='#eaf7e4';
+  const tk=token;let cur=null,last=-1,busy=false;
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#eaf7e4"/><rect x="430" y="140" width="740" height="560" rx="60" fill="#fff" stroke="#bfe3b0" stroke-width="10"/>`;
+  const iconG=el('g',{},sceneG),btnG=el('g',{},sceneG),findsG=el('g',{},sceneG);
+  let inp=document.getElementById('camInp');if(!inp){inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.setAttribute('capture','environment');inp.id='camInp';inp.style.display='none';document.body.appendChild(inp);}
+  inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=document.createElement('canvas');const s=360/Math.max(img.width,img.height);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const url=c.toDataURL('image/jpeg',.7);S.finds=[url,...(S.finds||[])].slice(0,6);save();renderFinds();found(true);URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);inp.value='';};
+  function renderFinds(){findsG.innerHTML='';(S.finds||[]).forEach((u,i)=>{const x=120+i*230,y=860;const g=el('g',{transform:`rotate(${(i%2?3:-3)} ${x} ${y})`},findsG);g.innerHTML=`<rect x="${x-95}" y="${y-95}" width="190" height="190" rx="12" fill="#fff" stroke="#ddd" stroke-width="3"/><image href="${u}" x="${x-82}" y="${y-82}" width="164" height="164" preserveAspectRatio="xMidYMid slice"/>`;});}
+  function next(){if(tk!==token)return;busy=false;let k;do{k=rnd(FIND.length);}while(k===last);last=k;cur=FIND[k];iconG.innerHTML='';const g=el('g',{transform:'translate(800,420)'},iconG);const inner=el('g',{},g);inner.innerHTML=findIcon(cur);inner.setAttribute('transform','scale(0)');tween(450,t=>inner.setAttribute('transform',`scale(${t})`),null,ease.back);say(cur.s,300);}
+  function found(withPhoto){if(busy)return;busy=true;SFX.tada();confetti(800,420);addStar(800,420);const praise=['Молодец! Нашла!','Ура! Правильно!','Умница!','Вот это да! Нашла!'];say(praise[rnd(praise.length)]);setTimeout(next,2600);}
+  const B=(x,y,r,col,icon,fn,pulse)=>{const g=el('g',{},btnG);const inner=el('g',{class:pulse?'pulse':''},g);inner.innerHTML=`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke="#fff" stroke-width="9"/>${icon}`;tap(g,fn);};
+  B(1340,420,130,'#3bceac',`<path d="M1280 425 L1325 470 L1405 375" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>`,()=>found(false),true);
+  B(1340,640,72,'#4d9de0',`<rect x="1295" y="612" width="90" height="64" rx="12" fill="#fff"/><rect x="1320" y="600" width="40" height="18" rx="5" fill="#fff"/><circle cx="1340" cy="644" r="20" fill="#4d9de0"/><circle cx="1340" cy="644" r="11" fill="#fff"/>`,()=>{SFX.pop();try{inp.click();}catch(e){}});
+  B(260,420,80,'#ffd23f',`<path d="M228 400 L248 400 L272 378 L272 462 L248 440 L228 440 Z" fill="#fff"/><path d="M288 395 Q304 420 288 445" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>`,()=>{if(cur)say(cur.s);});
+  B(260,620,62,'#b388eb',`<path d="M238 590 L288 620 L238 650 Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`,()=>{SFX.pop();next();});
+  renderFinds();drawUI(false);next();
+}
+
+/* ================= REPEAT AFTER ME ================= */
+const MOVES=[
+  {s:'Похлопай в ладоши!',k:'clap'},{s:'Помаши ручкой!',k:'wave'},{s:'Попрыгай, как зайчик!',k:'jump'},{s:'Подними ручки вверх!',k:'up'},{s:'Покружись!',k:'spin'},
+  {s:'Присядь!',k:'squat'},{s:'Покажи, как мишка спит!',k:'sleep'},{s:'Потопай ножками!',k:'stomp'},{s:'Покачай головой!',k:'head'},{s:'Помаши крылышками, как птичка!',k:'bird'}
+];
+function repeatScene(){
+  document.body.style.background='#fff0f6';
+  const tk=token;let mv=null,t0=0,phase='idle',last=-1;
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fff0f6"/><rect x="-2000" y="790" width="5600" height="3000" fill="#ffd6e8"/><ellipse cx="800" cy="800" rx="260" ry="34" fill="#f5b8d2"/>`;
+  const bear=el('g',{},sceneG);
+  const sk='#b07a4f',bl='#e3c29b';
+  bear.innerHTML=`<g id="bT"><g id="bLegL" transform="translate(-50,-20)"><rect x="-26" y="0" width="52" height="95" rx="24" fill="${sk}"/><ellipse cx="0" cy="98" rx="36" ry="20" fill="${sk}"/></g><g id="bLegR" transform="translate(50,-20)"><rect x="-26" y="0" width="52" height="95" rx="24" fill="${sk}"/><ellipse cx="0" cy="98" rx="36" ry="20" fill="${sk}"/></g>
+   <g id="bArmL" transform="translate(-85,-190)"><rect x="-22" y="0" width="44" height="125" rx="22" fill="${sk}"/><circle cx="0" cy="128" r="26" fill="${sk}"/></g><g id="bArmR" transform="translate(85,-190)"><rect x="-22" y="0" width="44" height="125" rx="22" fill="${sk}"/><circle cx="0" cy="128" r="26" fill="${sk}"/></g>
+   <ellipse cx="0" cy="-110" rx="100" ry="120" fill="${sk}"/><ellipse cx="0" cy="-90" rx="60" ry="80" fill="${bl}"/>
+   <g id="bHead" transform="translate(0,-265)"><circle cx="-65" cy="-70" r="34" fill="${sk}"/><circle cx="65" cy="-70" r="34" fill="${sk}"/><circle cx="-65" cy="-70" r="18" fill="${bl}"/><circle cx="65" cy="-70" r="18" fill="${bl}"/><circle r="90" fill="${sk}"/><ellipse cx="0" cy="30" rx="44" ry="34" fill="${bl}"/><ellipse cx="0" cy="16" rx="16" ry="11" fill="#4a2f1d"/><path d="M-16 40 Q0 54 16 40" fill="none" stroke="#4a2f1d" stroke-width="6" stroke-linecap="round"/><g id="bEyes"><ellipse cx="-35" cy="-20" rx="11" ry="15" fill="#2b2b3a"/><ellipse cx="35" cy="-20" rx="11" ry="15" fill="#2b2b3a"/></g><g id="bEyesC" opacity="0"><path d="M-48 -18 Q-35 -8 -22 -18" fill="none" stroke="#2b2b3a" stroke-width="6" stroke-linecap="round"/><path d="M22 -18 Q35 -8 48 -18" fill="none" stroke="#2b2b3a" stroke-width="6" stroke-linecap="round"/></g><circle cx="-58" cy="20" r="14" fill="#ff9eb0" opacity=".6"/><circle cx="58" cy="20" r="14" fill="#ff9eb0" opacity=".6"/></g>
+   <g id="bZ" opacity="0"><text x="120" y="-380" font-size="70" fill="#7b4fc9">Z</text><text x="175" y="-440" font-size="50" fill="#7b4fc9">z</text><text x="215" y="-485" font-size="36" fill="#7b4fc9">z</text></g></g>`;
+  const $b=id=>bear.querySelector('#'+id);const T=$b('bT'),AL=$b('bArmL'),AR=$b('bArmR'),LL=$b('bLegL'),LR=$b('bLegR'),HD=$b('bHead'),EO=$b('bEyes'),EC=$b('bEyesC'),ZZ=$b('bZ');
+  const capG=el('g',{},sceneG),btnG=el('g',{},sceneG);
+  let lastBeat=0;
+  function pose(t){const P={x:0,y:0,rot:0,sx:1,sy:1,al:8,ar:-8,ll:0,lr:0,h:0,sleep:false};const k=mv?mv.k:'idle',w=Math.sin;
+    if(phase==='idle'){P.y=-4*Math.abs(w(t*2));P.h=4*w(t*1.5);}
+    else switch(k){
+      case 'clap':{const c=(w(t*9)+1)/2;P.al=-100-28*c;P.ar=100+28*c;if(w(t*9)>.97&&t-lastBeat>.25){lastBeat=t;tone(1400,.05,'square',.12);}}break;
+      case 'wave':P.ar=150+25*w(t*8);P.h=6*w(t*4);break;
+      case 'jump':P.y=-Math.abs(w(t*5))*110;P.al=40;P.ar=-40;P.ll=10*w(t*10);P.lr=-P.ll;break;
+      case 'up':P.al=170;P.ar=-170;P.sy=1+.05*(w(t*3)+1)/2;P.y=-10*(w(t*3)+1)/2;break;
+      case 'spin':P.sx=Math.cos(t*4);P.al=60;P.ar=-60;break;
+      case 'squat':{const s=(1-Math.cos(t*3))/2;P.y=60*s;P.sy=1-.15*s;P.al=-70*s;P.ar=70*s;}break;
+      case 'sleep':P.rot=8;P.h=-22;P.sleep=true;P.al=-120;P.ar=40;P.y=4*w(t*2);break;
+      case 'stomp':{const s=w(t*7);P.ll=s>0?-25*s:0;P.lr=s<0?25*s:0;P.y=-12*Math.abs(s);if(Math.abs(s)>.98&&t-lastBeat>.2){lastBeat=t;tone(90,.12,'sine',.35);}}break;
+      case 'head':P.h=22*w(t*5);break;
+      case 'bird':P.al=90+45*w(t*10);P.ar=-90-45*w(t*10);P.y=-15*Math.abs(w(t*5));break;
+    }
+    T.setAttribute('transform',`translate(${800+P.x},${790+P.y}) rotate(${P.rot}) scale(${P.sx},${P.sy})`);
+    AL.setAttribute('transform',`translate(-85,-190) rotate(${P.al})`);AR.setAttribute('transform',`translate(85,-190) rotate(${P.ar})`);
+    LL.setAttribute('transform',`translate(-50,-20) rotate(${P.ll})`);LR.setAttribute('transform',`translate(50,-20) rotate(${P.lr})`);
+    HD.setAttribute('transform',`translate(0,-265) rotate(${P.h})`);EO.setAttribute('opacity',P.sleep?0:1);EC.setAttribute('opacity',P.sleep?1:0);ZZ.setAttribute('opacity',P.sleep?.6+.4*w(t*3):0);
+  }
+  (function loop(now){if(tk!==token)return;pose((now-t0)/1000);requestAnimationFrame(loop);})(performance.now());
+  function caption(txt,col){capG.innerHTML=`<rect x="300" y="40" width="1000" height="110" rx="55" fill="#fff" stroke="${col||'#ff8fc0'}" stroke-width="6"/><text x="800" y="115" text-anchor="middle" font-size="52" fill="${col||'#e0407f'}">${txt}</text>`;}
+  function buttons(show){btnG.innerHTML='';if(!show)return;
+    const g1=el('g',{},btnG);g1.innerHTML=`<circle cx="330" cy="560" r="90" fill="#ffd23f" stroke="#fff" stroke-width="9"/><path d="M290 560 A40 40 0 1 1 330 600" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/><path d="M270 545 L292 575 L312 548Z" fill="#fff"/>`;tap(g1,()=>{SFX.pop();start(mv);});
+    const g2=el('g',{},btnG);const in2=el('g',{class:'pulse'},g2);in2.innerHTML=`<circle cx="1270" cy="560" r="120" fill="#3bceac" stroke="#fff" stroke-width="10"/><path d="M1225 500 L1310 560 L1225 620 Z" fill="#fff" stroke="#fff" stroke-width="20" stroke-linejoin="round"/>`;tap(g2,()=>{SFX.pop();start();});}
+  function start(m){
+    let k;if(!m){do{k=rnd(MOVES.length);}while(k===last);last=k;m=MOVES[k];}mv=m;buttons(false);
+    phase='idle';t0=performance.now();caption('Повтори за мной!');say('Повтори за мной! '+mv.s,200);
+    setTimeout(()=>{if(tk!==token||mv!==m)return;phase='show';t0=performance.now();caption(mv.s);},1800);
+    setTimeout(()=>{if(tk!==token||mv!==m)return;caption('Теперь ты!','#3bceac');say('Теперь ты!');},6000);
+    setTimeout(()=>{if(tk!==token||mv!==m)return;phase='idle';SFX.tada();confetti(800,400);addStar(800,400);caption('Молодец!','#ff8f1f');say('Молодец!');buttons(true);},10500);
+  }
+  tap(bear,()=>{if(phase==='idle'&&mv)start(mv);});
+  drawUI(false);start();
+}
+
+/* ================= ROAD ================= */
+function roadScene(){
+  document.body.style.background='#cfeefe';
+  const tk=token;let off=0,speed=0,wait=null;const CARX=260,FRONT=CARX+300;
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#cfeefe"/><circle cx="1400" cy="140" r="70" fill="#ffe066"/>`;
+  const cloudG=el('g',{},sceneG),houseG=el('g',{},sceneG);
+  sceneG.insertAdjacentHTML('beforeend',`<rect x="-2000" y="640" width="5600" height="50" fill="#d9d4cc"/><rect x="-2000" y="690" width="5600" height="210" fill="#5d6470"/><rect x="-2000" y="900" width="5600" height="2000" fill="#d9d4cc"/><rect x="-2000" y="900" width="5600" height="10" fill="#bdb6aa"/>`);
+  const laneG=el('g',{},sceneG),worldG=el('g',{},sceneG),carG=el('g',{},sceneG),duckG=el('g',{},sceneG),uiL=el('g',{},sceneG);
+  cloudG.innerHTML=[0,1,2,3].map(i=>`<g transform="translate(${i*500},${100+(i%2)*60})"><ellipse rx="90" ry="40" fill="#fff"/><ellipse cx="60" cy="-20" rx="70" ry="45" fill="#fff"/></g>`).join('');
+  const HCOL=['#ffb3c7','#ffd59e','#b8e0d2','#c9b8ff','#ffe9a8','#a8d8ff'];
+  houseG.innerHTML=[...Array(10)].map((_,i)=>{const x=i*320,h=220+((i*73)%140),c=HCOL[i%6];return `<g transform="translate(${x},640)"><rect x="0" y="${-h}" width="260" height="${h}" fill="${c}"/>${[...Array(Math.floor(h/80))].map((_,r)=>`<rect x="30" y="${-h+30+r*80}" width="60" height="45" fill="#fff" opacity=".8"/><rect x="160" y="${-h+30+r*80}" width="60" height="45" fill="#fff" opacity=".8"/>`).join('')}</g>`;}).join('');
+  laneG.innerHTML=[...Array(30)].map((_,i)=>`<rect x="${i*160}" y="790" width="90" height="12" rx="6" fill="#fff"/>`).join('');
+  const CARCOL='#ff5d73';
+  carG.innerHTML=`<g transform="translate(${CARX},700)"><path d="M20 120 L20 70 Q20 50 40 50 L80 50 L120 0 L210 0 L255 50 L285 55 Q300 60 300 80 L300 120 Z" fill="${CARCOL}" stroke="#c9184a" stroke-width="6" stroke-linejoin="round"/><path d="M95 50 L128 12 L160 12 L160 50Z" fill="#bfe8ff"/><path d="M172 50 L172 12 L205 12 L240 50Z" fill="#bfe8ff"/><circle cx="292" cy="80" r="10" fill="#ffe066"/><rect x="14" y="78" width="14" height="14" rx="4" fill="#ffb703"/><g id="w1" transform="translate(85,122)"><circle r="40" fill="#2b2b3a"/><circle r="18" fill="#cfd6de"/><rect x="-3" y="-18" width="6" height="36" fill="#9aa5b1"/></g><g id="w2" transform="translate(235,122)"><circle r="40" fill="#2b2b3a"/><circle r="18" fill="#cfd6de"/><rect x="-3" y="-18" width="6" height="36" fill="#9aa5b1"/></g><circle cx="150" cy="-20" r="0"/></g>`;
+  const W1=carG.querySelector('#w1'),W2=carG.querySelector('#w2');
+  const evs=[];let nextX=1400;
+  function addEv(){const type=evs.length%2===0?'light':(Math.random()<.5?'ducks':'light');evs.push({x:nextX,type,state:type==='light'?'red':'green',stage:0,done:false,g:null,blocking:true,prompted:false});nextX+=1500;}
+  for(let i=0;i<3;i++)addEv();
+  function lightSVG(state){const on=c=>state===c;return `<rect x="-14" y="-10" width="28" height="60" fill="#555"/><rect x="-62" y="-300" width="124" height="300" rx="26" fill="#2b2b3a" stroke="#111" stroke-width="6"/><circle cx="0" cy="-250" r="38" fill="${on('red')?'#ff3b3b':'#5a2a2a'}"/><circle cx="0" cy="-150" r="38" fill="${on('yellow')?'#ffd23f':'#5a4f2a'}"/><circle cx="0" cy="-50" r="38" fill="${on('green')?'#3bd16f':'#2a4a35'}"/>${on('red')?'<circle cx="0" cy="-250" r="50" fill="#ff3b3b" opacity=".25"/>':''}${on('green')?'<circle cx="0" cy="-50" r="50" fill="#3bd16f" opacity=".25"/>':''}`;}
+  function evSVG(e){const z=e.type==='ducks'?[...Array(6)].map((_,i)=>`<rect x="${20+i*0}" y="${700+i*34}" width="150" height="20" fill="#fff"/>`).join(''):'';return `${z}<rect x="-10" y="690" width="10" height="210" fill="#fff"/><g transform="translate(-60,640)" class="btn">${lightSVG(e.state)}</g>`;}
+  function renderEv(e){if(!e.g){e.g=el('g',{transform:`translate(${e.x},0)`},worldG);e.g.addEventListener('pointerup',()=>tapLight(e));}e.g.innerHTML=evSVG(e);}
+  evs.forEach(renderEv);
+  function setState(e,s){e.state=s;renderEv(e);}
+  function duckSVG(sz){return `<g transform="scale(${sz})"><ellipse cx="0" cy="0" rx="40" ry="28" fill="#ffd23f"/><circle cx="30" cy="-30" r="22" fill="#ffd23f"/><path d="M48 -30 L68 -24 L48 -20Z" fill="#ff9f1c"/><circle cx="36" cy="-34" r="4" fill="#222"/><path d="M-40 -5 L-58 -15 L-50 5Z" fill="#ffc400"/></g>`;}
+  function tapLight(e){
+    if(wait!==e)return;SFX.pop();
+    if(e.type==='light'){if(e.state==='red'){setState(e,'yellow');say('Жёлтый! Приготовились!');setTimeout(()=>{if(tk!==token)return;setState(e,'green');say('Зелёный! Поехали!');e.blocking=false;wait=null;},1300);}}
+    else{
+      if(e.stage===0&&e.state==='green'){e.stage=1;setState(e,'yellow');say('Жёлтый!');setTimeout(()=>{if(tk!==token)return;setState(e,'red');say('Красный! Машины стоят, утята идут!');crossDucks(e);},1200);}
+      else if(e.stage===2&&e.state==='red'){e.stage=3;setState(e,'yellow');say('Жёлтый! Приготовились!');setTimeout(()=>{if(tk!==token)return;setState(e,'green');say('Зелёный! Поехали!');e.blocking=false;wait=null;},1300);}
+    }
+  }
+  function crossDucks(e){const ducks=[0,1,2].map(i=>{const g=el('g',{},duckG);g.innerHTML=duckSVG(i?0.6:1);return {g,dx:i*-70};});const sx=e.x+95;const t0=performance.now();
+    (function step(now){if(tk!==token)return;const t=Math.min(1,(now-t0)/4200);ducks.forEach((d,i)=>{d.g.setAttribute('transform',`translate(${sx-off+Math.sin(now/120+i)*6},${980+i*75-t*(430+i*75)}) rotate(-90)`);});if(t<1)requestAnimationFrame(step);else{ducks.forEach(d=>d.g.remove());SFX.sparkle();e.stage=2;say('Утята перешли! Включи зелёный, и поехали!');}})(performance.now());
+    say('Кря-кря!',2200);}
+  function honk(){tone(440,.25,'square',.15);tone(554,.25,'square',.12);say('Би-би!');}
+  const hb=el('g',{},uiL);hb.innerHTML=`<circle cx="1470" cy="890" r="85" fill="#ffd23f" stroke="#fff" stroke-width="9"/><text x="1470" y="908" text-anchor="middle" font-size="46" fill="#a86b00">БИ-БИ</text>`;tap(hb,honk);
+  tap(carG,honk);
+  let lastT=performance.now();
+  (function loop(now){if(tk!==token)return;const dt=Math.min(50,now-lastT)/16.7;lastT=now;
+    const e=evs.find(v=>!v.done);let target=wait?0:7;
+    if(e&&e.blocking&&!wait){const stopAt=e.x-30;const front=off+FRONT;if(front>=stopAt-260){target=Math.max(1.2,Math.min(target,(stopAt-front)/12));}if(front>=stopAt-8&&!wait){off=stopAt-FRONT;target=0;speed=0;wait=e;if(!e.prompted){e.prompted=true;if(e.type==='light')say('Красный свет — стоим! Нажми на светофор!');else{const g=el('g',{transform:`translate(${e.x+95-off},960) rotate(-90)`},duckG);g.innerHTML=duckSVG(1);setTimeout(()=>g.remove(),2600);say('Утята хотят перейти дорогу! Включи красный свет!');}}}}
+    speed+=(target-speed)*.08*dt;off+=speed*dt;
+    if(e&&!e.blocking&&off+CARX>e.x+150){e.done=true;SFX.sparkle();addStar(800,300);addEv();renderEv(evs[evs.length-1]);}
+    while(evs.length&&evs[0].done&&evs[0].x-off<-400){evs[0].g&&evs[0].g.remove();evs.shift();}
+    worldG.setAttribute('transform',`translate(${-off},0)`);laneG.setAttribute('transform',`translate(${-(off%160)},0)`);houseG.setAttribute('transform',`translate(${-((off*.5)%320)},0)`);cloudG.setAttribute('transform',`translate(${-((off*.15)%500)},0)`);
+    const ang=(off*1.4)%360;W1.setAttribute('transform',`translate(85,122) rotate(${ang})`);W2.setAttribute('transform',`translate(235,122) rotate(${ang})`);
+    requestAnimationFrame(loop);})(performance.now());
+  drawUI(false);say('Поехали кататься!',300);
 }
 
 /* ---------- orientation hint ---------- */
