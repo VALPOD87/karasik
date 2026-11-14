@@ -46,7 +46,7 @@ function starD(cx,cy,R,r){let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Ma
 
 /* ---------- storage ---------- */
 const store={get(k,d){try{const v=localStorage.getItem('karasik_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('karasik_'+k,JSON.stringify(v));}catch(e){}}};
-const S={stars:store.get('stars',0),buildIdx:store.get('buildIdx',0),sound:store.get('sound',true),voice:store.get('voice',true),looks:store.get('looks',{}),album:store.get('album',[]),charIdx:store.get('charIdx',0),abcLvl:store.get('abcLvl',0),numLvl:store.get('numLvl',0),abcMode:store.get('abcMode','num'),pzLvl:store.get('pzLvl',0),pzIdx:store.get('pzIdx',0),pzDone:store.get('pzDone',0),finds:store.get('finds',[]),numStreak:store.get('numStreak',0),abcStreak:store.get('abcStreak',0),orderLvl:store.get('orderLvl',0),orderWins:store.get('orderWins',0)};
+const S={stars:store.get('stars',0),buildIdx:store.get('buildIdx',0),sound:store.get('sound',true),voice:store.get('voice',true),looks:store.get('looks',{}),album:store.get('album',[]),charIdx:store.get('charIdx',0),abcLvl:store.get('abcLvl',0),numLvl:store.get('numLvl',0),abcMode:store.get('abcMode','num'),pzPos:store.get('pzPos',{}),pzLvl:store.get('pzLvl',0),pzIdx:store.get('pzIdx',0),pzDone:store.get('pzDone',0),finds:store.get('finds',[]),numStreak:store.get('numStreak',0),abcStreak:store.get('abcStreak',0),orderLvl:store.get('orderLvl',0),orderWins:store.get('orderWins',0)};
 function save(){for(const k in S)store.set(k,S[k]);}
 
 /* ---------- sound ---------- */
@@ -867,14 +867,47 @@ function abcScene(){
   renderTop();drawUI(false);round();
 }
 
-/* ================= PHOTO PUZZLE ================= */
 const PHOTOS=[1,2,3,4,5,6,7,8,9,10].map(i=>`photos/${i}.jpg`);
+/* ================= PHOTO PUZZLE ================= */
+function pzPics(){
+ const bg=(c,m)=>`<rect width="900" height="1200" fill="${c}"/>${m}`;
+ const doll=(id,look,c)=>{const ch=CHARS.find(x=>x.id===id);return bg(c,`<ellipse cx="450" cy="1040" rx="260" ry="36" fill="rgba(0,0,0,.1)"/><g transform="translate(450,690) scale(1.35)">${dollMarkup(ch,look?ch.def:{})}</g>`);};
+ const veh=(k,c)=>{const v=vehSVG(k);return bg(c,`<circle cx="720" cy="200" r="90" fill="#ffe066"/><ellipse cx="250" cy="260" rx="150" ry="60" fill="#fff"/><rect y="760" width="900" height="440" fill="#5d6470"/><rect x="60" y="960" width="200" height="26" rx="12" fill="#fff"/><rect x="380" y="960" width="200" height="26" rx="12" fill="#fff"/><rect x="700" y="960" width="200" height="26" rx="12" fill="#fff"/><g transform="translate(${450-v.w*.95},560) scale(1.9)">${v.m.replace(/<g class="wh" data-x="(\d+)">/g,'<g transform="translate($1,122)">')}</g>`);};
+ const leaf=(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="90" ry="44" fill="#5cc46a" stroke="#2e9e5b" stroke-width="10" transform="rotate(${r} ${x} ${y})"/>`;
+ return {
+  yasya:{name:'Ясмина',col:'#ff8fc0',pics:PHOTOS.map(src=>({img:src}))},
+  animals:{name:'Животные',col:'#5cc46a',pics:[doll('cat',0,'#fff1d2'),doll('bear',0,'#dff4ff'),doll('bunny',0,'#fde8f1'),doll('fox',0,'#e6f4ea'),doll('unicorn',0,'#f1e2ff'),bg('#bfe9ff',`<rect y="900" width="900" height="300" fill="#7cc8f2"/><g transform="translate(470,600) scale(2.7)">${fishSVG()}</g><circle cx="760" cy="300" r="34" fill="#fff" opacity=".7"/><circle cx="800" cy="200" r="22" fill="#fff" opacity=".7"/>`)].map(svg=>({svg}))},
+  fruits:{name:'Фрукты',col:'#ff9f1c',pics:[
+   bg('#e6f4ea',`<path d="M450 400 C200 260 60 520 150 780 C220 1010 380 1060 450 1000 C520 1060 680 1010 750 780 C840 520 700 260 450 400Z" fill="#ff5d73" stroke="#c9184a" stroke-width="16"/><path d="M450 410 Q440 300 500 220" fill="none" stroke="#8a5a3c" stroke-width="24" stroke-linecap="round"/>${leaf(590,260,-25)}<ellipse cx="300" cy="600" rx="50" ry="90" fill="#fff" opacity=".35" transform="rotate(20 300 600)"/>`),
+   bg('#dff4ff',`<path d="M200 330 Q150 800 520 960 Q760 1030 800 860 Q560 860 420 640 Q330 480 320 320 Z" fill="#ffe066" stroke="#e0a800" stroke-width="16" stroke-linejoin="round"/><path d="M200 330 L320 320 L300 240 L220 250Z" fill="#8a5a3c"/><path d="M300 420 Q330 720 640 900" fill="none" stroke="#e0a800" stroke-width="10"/>`),
+   bg('#fff1d2',`<circle cx="450" cy="640" r="330" fill="#ffab4a" stroke="#e07b00" stroke-width="16"/>${leaf(540,300,-20)}<circle cx="450" cy="330" r="22" fill="#8a5a3c"/>${[[330,560],[520,480],[600,700],[380,780],[480,640],[300,700]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="#e07b00"/>`).join('')}`),
+   bg('#fde8f1',`<path d="M450 330 C380 330 350 430 330 540 C240 640 220 820 300 930 C380 1030 520 1030 600 930 C680 820 660 640 570 540 C550 430 520 330 450 330Z" fill="#c9e86a" stroke="#8fb02f" stroke-width="16"/><path d="M450 340 Q450 250 500 200" fill="none" stroke="#8a5a3c" stroke-width="22" stroke-linecap="round"/>${leaf(580,250,-20)}`),
+   bg('#e3f2ff',`<path d="M450 1040 C200 900 160 620 250 480 Q450 380 650 480 C740 620 700 900 450 1040Z" fill="#ff5d73" stroke="#c9184a" stroke-width="16"/>${[[360,600],[540,600],[450,700],[340,760],[560,760],[450,860],[400,520],[500,520]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="12" ry="18" fill="#ffe066"/>`).join('')}<path d="M260 470 L360 380 L450 450 L540 380 L640 470 L450 520Z" fill="#5cc46a" stroke="#2e9e5b" stroke-width="12" stroke-linejoin="round"/>`),
+   bg('#fff8ec',`<path d="M90 520 A380 380 0 0 0 810 520 Z" fill="#5cc46a" stroke="#2e9e5b" stroke-width="16"/><path d="M140 520 A330 330 0 0 0 760 520 Z" fill="#fff"/><path d="M170 520 A300 300 0 0 0 730 520 Z" fill="#ff5d73"/>${[[330,600],[450,640],[570,600],[390,720],[510,720]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="14" ry="22" fill="#3a3a48"/>`).join('')}`),
+   bg('#f1e2ff',`${[[350,520],[550,520],[450,520],[400,660],[500,660],[300,660],[600,660],[450,800],[350,800],[550,800],[450,940]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="84" fill="#b388eb" stroke="#7b4fc9" stroke-width="12"/><circle cx="${x-26}" cy="${y-26}" r="18" fill="#fff" opacity=".5"/>`).join('')}<path d="M450 440 L450 300" stroke="#8a5a3c" stroke-width="22" stroke-linecap="round"/>${leaf(560,330,-20)}`)
+  ].map(svg=>({svg}))},
+  cars:{name:'Машины',col:'#4d9de0',pics:[veh('car','#cfeefe'),veh('bus','#fde8f1'),veh('fire','#fff1d2'),bg('#1b1f4b',`${[...Array(30)].map((_,i)=>`<circle cx="${(i*397)%900}" cy="${(i*211)%1200}" r="${4+(i%3)*3}" fill="#fff"/>`).join('')}<g transform="translate(450,860) scale(2.6)"><path d="M0 -230 Q60 -150 60 -20 L-60 -20 Q-60 -150 0 -230Z" fill="#fff" stroke="#c3ccd8" stroke-width="6"/><circle cx="0" cy="-110" r="26" fill="#8fd3ff" stroke="#4d9de0" stroke-width="6"/><path d="M-60 -60 L-110 30 L-60 10Z M60 -60 L110 30 L60 10Z" fill="#ff5d73"/><path d="M0 -230 Q30 -190 38 -160 L-38 -160 Q-30 -190 0 -230Z" fill="#ff5d73"/><path d="M-30 -20 Q0 90 30 -20Z" fill="#ffab4a"/></g>`)].map(svg=>({svg}))},
+  heroes:{name:'Герои',col:'#b388eb',pics:[doll('princess',1,'#fde8f1'),doll('fairy',1,'#e6f4ea'),doll('mermaid',1,'#bfe9ff'),doll('prince',1,'#fff1d2'),doll('knight',1,'#e3f2ff'),doll('pirate',1,'#fff8ec'),doll('astronaut',1,'#1b1f4b')].map(svg=>({svg}))}
+ };
+}
+function picMk(p,x,y,w,h,extra){return p.img?`<image href="${p.img}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" ${extra||''}/>`:`<g ${extra||''}><svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">${p.svg}</svg></g>`;}
+const PZG=[[2,2],[2,3],[3,3]];
 function puzzleScene(){
+ document.body.style.background='#fff3e0';const F=pzPics();
+ sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fff3e0"/>`;
+ const g1=el('g',{},sceneG),g2=el('g',{},sceneG);
+ Object.keys(F).forEach((k,i)=>{const f=F[k],x=200+i*300,y=400;const g=el('g',{},g1);g.innerHTML=`<rect x="${x-125}" y="${y-190}" width="250" height="400" rx="40" fill="#fff" stroke="${f.col}" stroke-width="10"/><clipPath id="fc${i}"><rect x="${x-105}" y="${y-170}" width="210" height="280" rx="24"/></clipPath>${picMk(f.pics[0],x-105,y-170,210,280,`clip-path="url(#fc${i})"`)}<text x="${x}" y="${y+175}" text-anchor="middle" font-size="40" fill="${f.col}">${f.name}</text>`;
+  tap(g,()=>{SFX.pop();say(f.name+'!');puzzlePlay.key=k;go(puzzlePlay);});});
+ function lv(){g2.innerHTML='';PZG.forEach(([c,r],i)=>{const x=560+i*240,y=810,sel=(S.pzLvl||0)===i;const g=el('g',{},g2);let m=`<rect x="${x-95}" y="${y-95}" width="190" height="190" rx="40" fill="${sel?'#ff9f1c':'#fff'}" stroke="#ff9f1c" stroke-width="8"/>`;const cw=110/c,ch=130/r;for(let a=0;a<c;a++)for(let b=0;b<r;b++)m+=`<rect x="${x-55+a*cw+3}" y="${y-65+b*ch+3}" width="${cw-6}" height="${ch-6}" rx="8" fill="${sel?'#fff':'#ffd9a0'}"/>`;g.innerHTML=m;
+   tap(g,()=>{S.pzLvl=i;save();SFX.pop();say(['Четыре кусочка!','Шесть кусочков!','Девять кусочков!'][i]);lv();});});}
+ lv();drawUI(false);say('Какой пазл соберём?',300);
+}
+function puzzlePlay(){
   document.body.style.background='#fff3e0';
-  const tk=token;const BX=150,BY=175,W=510,H=680;
-  const grids=[[2,2],[2,3]];const [cols,rows]=grids[Math.min(S.pzLvl||0,1)];
-  const src=PHOTOS[(S.pzIdx||0)%PHOTOS.length];
-  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fff3e0"/><rect x="${BX-25}" y="${BY-25}" width="${W+50}" height="${H+50}" rx="30" fill="#e9b872"/><rect x="${BX}" y="${BY}" width="${W}" height="${H}" fill="#fff"/><image href="${src}" x="${BX}" y="${BY}" width="${W}" height="${H}" opacity=".2" preserveAspectRatio="xMidYMid slice"/><rect x="720" y="160" width="850" height="800" rx="50" fill="#ffe2bd"/>`;
+  const tk=token;const BX=150,BY=175,W=510,H=680;const F=pzPics(),key=F[puzzlePlay.key]?puzzlePlay.key:'yasya',pics=F[key].pics;
+  const [cols,rows]=PZG[Math.min(S.pzLvl||0,2)];S.pzPos=S.pzPos||{};const pic=pics[(S.pzPos[key]||0)%pics.length];
+  sceneG.innerHTML=`<rect x="-2000" y="-2000" width="5600" height="5000" fill="#fff3e0"/><rect x="${BX-25}" y="${BY-25}" width="${W+50}" height="${H+50}" rx="30" fill="#e9b872"/><rect x="${BX}" y="${BY}" width="${W}" height="${H}" fill="#fff"/><g opacity=".2">${picMk(pic,BX,BY,W,H)}</g><rect x="720" y="160" width="850" height="800" rx="50" fill="#ffe2bd"/>`;
+  const bk=el('g',{},sceneG);bk.innerHTML=`<circle cx="232" cy="80" r="56" fill="#fff" stroke="#ff9f1c" stroke-width="7"/><g stroke="#fff" stroke-width="4"><rect x="204" y="52" width="27" height="27" fill="#ff9f1c"/><rect x="233" y="52" width="27" height="27" fill="#ffd23f"/><rect x="204" y="81" width="27" height="27" fill="#4d9de0"/><rect x="233" y="81" width="27" height="27" fill="#5cc46a"/></g>`;tap(bk,()=>{SFX.pop();go(puzzleScene);});
   const gridG=el('g',{},sceneG),placedL=el('g',{},sceneG),trayL=el('g',{},sceneG),dragL=el('g',{},sceneG);
   const cw=W/cols,ch=H/rows;
   const hv=[...Array(rows)].map(()=>[...Array(cols)].map(()=>Math.random()<.5?1:-1));
@@ -888,7 +921,7 @@ function puzzleScene(){
     const top=r===0?0:-hv[r-1][c],right=c===cols-1?0:vv[r][c],bottom=r===rows-1?0:hv[r][c],left=c===0?0:-vv[r][c-1];
     const d=`M${x0} ${y0} ${edge(x0,y0,x1,y0,top)} ${edge(x1,y0,x1,y1,right)} ${edge(x1,y1,x0,y1,bottom)} ${edge(x0,y1,x0,y0,left)} Z`;
     const id='pz'+tk+'_'+pieces.length;const g=el('g',{class:'btn'},trayL);
-    g.innerHTML=`<clipPath id="${id}"><path d="${d}"/></clipPath><image href="${src}" x="${BX}" y="${BY}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/><path class="ol" d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>`;
+    g.innerHTML=`<clipPath id="${id}"><path d="${d}"/></clipPath>${picMk(pic,BX,BY,W,H,`clip-path="url(#${id})"`)}<path class="ol" d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>`;
     pieces.push({g,cx:x0+cw/2,cy:y0+ch/2,x:0,y:0,s:1,placed:false});
   }
   const n=pieces.length,tc=n<=4?2:n<=9?3:4,tr=Math.ceil(n/tc),tw=850/tc,th=800/tr;const ts=Math.min(.9,tw*.86/(cw*1.3),th*.86/(ch*1.3));
@@ -900,8 +933,8 @@ function puzzleScene(){
     if(Math.hypot(p.x-p.cx,p.y-p.cy)<Math.max(70,cw*.4)){p.placed=true;const sx=p.x,sy=p.y;tween(160,t=>{p.x=sx+(p.cx-sx)*t;p.y=sy+(p.cy-sy)*t;p.s=1;place(p);},()=>{placedL.appendChild(p.g);p.g.classList.remove('btn');SFX.snap();burst(p.cx,p.cy);if(pieces.every(q=>q.placed))done();});}
     else{SFX.back();const sx=p.x,sy=p.y,ss=p.s;tween(350,t=>{p.x=sx+(p.hx-sx)*t;p.y=sy+(p.hy-sy)*t;p.s=ss+(p.hs-ss)*t;place(p);},()=>trayL.appendChild(p.g),ease.back);}};
   function done(){busy=true;setTimeout(()=>{if(tk!==token)return;placedL.querySelectorAll('.ol').forEach(o=>tween(400,t=>o.setAttribute('opacity',1-t)));gridG.remove();SFX.tada();confetti(BX+W/2,BY+H/2);addStar(BX+W/2,BY+H/2);say('Ура! Картинка собралась!');
-      S.pzDone=(S.pzDone||0)+1;if(S.pzDone%6===0)S.pzLvl=Math.min(1,(S.pzLvl||0)+1);S.pzIdx=((S.pzIdx||0)+1)%PHOTOS.length;save();
-      const g=el('g',{},sceneG);const inner=el('g',{class:'pulse'},g);inner.innerHTML=`<circle cx="1145" cy="560" r="130" fill="#3bceac" stroke="#fff" stroke-width="10"/><path d="M1095 495 L1185 560 L1095 625 Z" fill="#fff" stroke="#fff" stroke-width="22" stroke-linejoin="round"/>`;tap(g,()=>{SFX.pop();go(puzzleScene);});},250);}
+      S.pzPos[key]=((S.pzPos[key]||0)+1)%pics.length;save();
+      const g=el('g',{},sceneG);const inner=el('g',{class:'pulse'},g);inner.innerHTML=`<circle cx="1145" cy="560" r="130" fill="#3bceac" stroke="#fff" stroke-width="10"/><path d="M1095 495 L1185 560 L1095 625 Z" fill="#fff" stroke="#fff" stroke-width="22" stroke-linejoin="round"/>`;tap(g,()=>{SFX.pop();go(puzzlePlay);});},250);}
   drawUI(false);say('Собери картинку!',400);
 }
 
